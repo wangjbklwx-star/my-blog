@@ -1,0 +1,55 @@
+---
+title: 每周分享 -- 重拾git
+date: 2019-11-07
+tags: ['学习笔记']
+description: 'Git 学习笔记：从核心原理出发，辨析 merge 与 rebase 的差异，并整理了本地与远程仓库版本回退的常用指令。'
+---
+这周轮到我做技术分享了，思来想去，还是决定选择git作为本周技术分享的主题。原因有二，一是最近在使用git时出现了一些难题，具体下文会有提到。二是，尽管每天都在使用git，但对于一些基础概念还是有模糊的地方，也想通过这次的分享进一步理解git。
+## git原理
+
+**workspace**: 工作区（当前的开发位置）
+- `git pull`: 从远程仓库拉取最新的代码到工作区 => `git fetch` + `git merge`
+- `git diff`: 查看修改但未暂存的文件
+
+**index**: 暂存区
+- `git add`: 工作区修改的内容提交到暂存区
+
+**repository**: 本地仓库
+- `git commit`: 将暂存区内容提交到本地仓库
+- `git fetch`或者`git clone`: 从远程仓库拉取/克隆代码到本地仓库
+
+**remote repository**: 远程仓库
+- `git push`: 将本地仓库内容提交到远程仓库 
+
+## 常见问题
+1. git push origin master具体是在做什么事?
+
+把本地`master`分支上的内容，推一份到`origin`这个地方，并且在`origin`这个地方建立一个同名的`master`分支
+**完整指令**:`git push origin master:master` => `git push <远程主机名> <本地分支名>:<远程分支名>`
+
+2. git merge和git rebase的区别
+
+举例：把test分支合并到master分支
+
+
+`git merge`的结果
+
+
+`git rebase`的结果
+
+
+[在线演示](https://gitbook.tw/playground#rebase)
+## 最近遇到的问题
+1. 本地项目运行出错，想要回退到之前的版本 => 本地仓库回退到之前的版本
+```bash
+git reset --hard/soft [需要回退的提交点]
+```
+2. 撤销已经推送到仓库的提交 => 远程仓库回退到之前的版本
+```bash
+git reset --hard [需要回退的提交点]
+git push origin HEAD --force 
+```
+## 更多
++ [图解Git](http://marklodato.github.io/visual-git-guide/index-zh-cn.html)
++ [为你自己學Git](https://gitbook.tw/)
++ [Git-Branching](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)

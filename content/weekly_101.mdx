@@ -1,0 +1,72 @@
+---
+title: Week in Mar 12, 2023
+date: 2023-03-12
+tags: ['AI', 'Weekly']
+description: '一周回顾：常用 AI 工具推荐，LLM 生成原理深度解析（RLHF、概率分布），以及从 Embeddings 到独立开发者的机会思考。'
+---
+这一周的主题是 ChatGPT 相关的内容。3月初，OpenAI 开放了 ChatGPT 的接口。这两周以来各种相关的应用如雨后春笋般冒出来。
+
+其中的一些产品已经成为我每天必用。同时我也在思考如何利用这些工具来提升我的学习和工作效率。尤其是在用 chatPDF 看文章或者论文时，不停地提出问题，会让我的注意力更加集中。
+
+## 使用过的产品
+
++ [chatPDF](https://www.chatpdf.com/)
++ [typingMind](https://www.typingmind.com/)
++ [openai-translator](https://github.com/yetone/openai-translator)
++ [roomGPT](https://www.roomgpt.io/)
++ [paul-graham-gpt](https://github.com/mckaywrigley/paul-graham-gpt)
+
+## 看的文章
+
++ [chatgpt-explained-a-guide-for-normies](https://www.jonstokes.com/p/chatgpt-explained-a-guide-for-normies)
+
+前段时间在做一个 [prompt engineering](https://learnprompting.org/docs/intro) 的翻译。看完这篇文章终于明白了为什么需要使用 prompt 来控制 ChatGPT 的输出结果。
+
+> 原理
+`A generative model is a function that can take a structured collection of symbols as input and produce a related structured collection of symbols as output`
+
+> 确定性（Deterministic） VS  随机性（stochastic）
+
+> 关联关系（Relationship matters）
+
++ 符号关系之间的多样性和复杂性
++ 潜在空间 -> 可能输出结果的多维空间
+
+> 概率分布（Probability distributions）
+
++ 哪些方法可以改变 LLM 模型的概率分布
+  + 训练（training）
+  + 微调（Fine-tuning）
+  + 人类反馈的强化学习（RLHF）
+
+## 一些思考
+
+### 学习到的技术
+
++ paul-graham-gpt
+  + 使用 embedding 来实现文本搜索 => 使用 cosSim 来计算相似度
+
+```ts
+export const cosSim = (A: number[], B: number[] ) =>
+    {
+        let dotproduct = 0
+        let MA = 0
+        let MB = 0
+        for (let I i < A.length; i++) {
+            dotproduct += A[i] * B[i]
+            MA += A[i] * A[i]
+            MB += B[i] * B[i]
+        }
+        MA = Math.sqrt(mA)
+        MB = Math.sqrt(mB)
+        const similarity = dotproduct / (MA * MB)
+        return similarity
+    }
+```
+
++ openai-translator
+  + 使用 tauri 将 web 应用打包成桌面 APP
+
+### 独立开发者的机会
+
++ typingmind 的开发者在[一周之内收益](https://twitter.com/tdinh_me/status/1634842333643698177) $20000

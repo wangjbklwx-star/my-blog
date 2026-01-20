@@ -1,0 +1,208 @@
+---
+title: 动手实现一个vue分页组件
+date: 2019-07-30
+tags: ['JavaScript']
+description: '本文记录了实现一个 Vue 分页组件的全过程，涵盖自定义页码数量、颜色主题及图标切换等需求分析。详细讲解了页码列表计算（minPage/maxPage）的核心逻辑，提供了 Props、Computed 和 Methods 的代码实现，并分享了关于编写独立组件与 API 设计的思考。'
+---
+
+```ts tab="<Building /> Tab 1"
+console.log('A');
+```
+
+```ts tab="<Rocket /> Tab 2"
+console.log('B');
+```
+## 需求分析
++ 自定义显示的页码按钮的数量
++ 自定义分页组件的颜色主题
++ 可以选择显示文本内容或者图标来进行翻页操作
+## 实现
+1. 分页组件需要显示的页码按钮数量，可以通过pagesToDisplay()这个计算属性定义
+2. 颜色主题可以通过绑定一个`paginationClass`的class，返回颜色`type`实现
+3. 文本或图标的选择可以通过嵌套条件判断template实现
+## 分页原理
+实现分页主要依靠这两个参数，total(总条目数)，perPage(每页显示的条目数量)。后端可以通过这两个参数，返回相应的数据给前端。
+整个分页组件中，相对来说比较麻烦的地方在于**页码列表的显示逻辑**。页码列表是一个返回[最小页码, 最大页码]的数组。进而，问题被切分为如何求解页码列表数组中页码值的最大值和最小值。这里定义两个计算属性maxPage()，minPage()来返回页码数组中页码值的最大值，和最小值。
+## 页面组件
+```html
+<template>
+  <ul class="pagination" :class="paginationClass">
+    <!-- 前一页 -->
+    <li
+      class="page-item prev-page"
+      :class="{ disabled: value === 1,'no-arrows': noArrows }"
+    >
+      <a class="page-link" arial-label="Previous" @click="prevPage">
+      <!-- 是否有文本 -->
+        <template v-if="withText">
+          perv
+        </template>
+      <!-- 箭头图标 -->
+        <i class="arrow-left" v-else></i>
+      </a>
+    </li>
+    <!-- 当前显示的分页列表 -->
+    <li
+      class="page-item"
+      v-for="item in range(minPage, maxPage)"
+      :key="item"
+      :class="{active: value === item}"
+    >
+      <a class="page-link" @click="changePage(item)">{{item}}</a>
+    </li>
+    <!-- 后一页 -->
+    <li
+      class="paga-item next-page"
+      :class="{disabled: value === totalPage, 'no-arrows': noArrows}" 
+    >
+      <a class="page-link" arial-label="Next" @click="nextPage">
+      <!-- 文本内容 -->
+        <template v-if="withText">
+          Next
+        </template>
+        <i class="arrow-right" v-else></i>
+      </a>
+    </li>
+  </ul>
+</template>
+```
+## props
+```js
+props: {
+  // 颜色主题
+  type: {
+    type: String,
+    default: "primary",
+    // 验证`type`的值
+    validator: value => {
+      return [
+        "default",
+        "primary",
+        "info",
+        "success",
+        "danger"
+      ].includes(value);
+    }
+  },
+  // 是否带有文本内容
+  withText: Boolean,
+  // 箭头图标
+  noArrows: Boolean,
+  // 页码数
+  pageCount: {
+    type: Number,
+    default: 0
+  },
+  // 每页显示的项数
+  perPage: {
+    type: Number,
+    default: 0
+  },
+  // 总项数
+  total: {
+    type: Number,
+    default: 0
+  },
+  // 当前页码的值
+  value: {
+    type: Number,
+    default: 1
+  }
+}
+```
+## data
+```js
+data: {
+  // 页码列表中显示的页码数量
+  defaultPagesToDisplay: 5
+}
+```
+## computed
+```js
+computed: {
+  // 颜色主题
+  paginationClass() {
+    return `pagination-${this.type}`
+  },
+  // 总页码数
+  toatalPages() {
+    if (this.pageCount > 0) return this.pageCount;
+    if (this.total > 0 ) {
+      return Math.ceil(this.total / this.perPage);
+    }
+  },
+  // 显示的页码按钮数量
+  pagesToDisplay() {
+    if (this.totalPages > 0 && this.totalPages < this.defaultPagesToDisplay) {
+      return this.totalPages;
+    } else {
+      return this.defaultPagesToDisplay;
+    }
+  },
+  // 页码列表中最小的页码数
+  minPage() {
+    if (this.value >= this.pagesToDisplay) {
+      // 定义一个偏移量
+      const pagesToAdd = Math.floor(this.pagesToDisplay / 2);
+      // 假定的最大页码数 = 当前页码值 + 偏移量
+      const newMaxPage = this.value + pagesToAdd;
+      if (newMaxPage > this.totalPages) {
+        return totalPages - this.pagesToDisplay + 1;
+      } else {
+        // 当前页码值始位处于页码列表的中间位置
+        return this.value - pagesToAdd;
+      }
+    } else {
+      // 当前页码值小于默认页码列表按钮数量时，最小页码数返回1
+      return 1;
+    }
+  },
+  // 页码列表中最大的页码数
+  maxPage() {
+    if (this.value >= this.pagesToDisplay) {
+      const pagesToAdd = Math.floor(this.pagesToDisplay / 2);
+      const newMaxPage = this.value + pagesToAdd;
+      if (newMaxPage < this.totalPages) {
+        return newMaxPage;
+      } else {
+        return totalPages;
+      }
+    } else {
+      // 当前页码值小于默认页码列表按钮数量时，最大页码数返回显示的页码列表按钮数
+      return this.pageToDisplay;
+    }
+  }
+}
+```
+## methods
+```js
+methods: {
+  // 页码列表数组
+  range(min, max) {
+    let arr =[];
+    for (let i = min; i <= max; i++) {
+      arr.push(i);
+    }
+    return arr;
+  },
+  // 跳转页码
+  changePage(item) {
+    this.$emit("input", item);
+  },
+  // 下一页
+  nextPage() {
+    if (this.value < this.totalPages) {
+      this.$emit("input", this.value + 1);
+    }
+  },
+  // 上一页
+  prevPage() {
+    if (this.value > 1) {
+      this.$emit("input", this.value - 1);
+    }
+  }
+}
+```
+## 最后
+想要不断提高自己的技术水平，就不能只满足于写**业务组件**。在写像分页这种**独立组件**的过程中，也让我思考`API的设计`，以及`功能复杂性`的问题。无论是多么复杂的组件，大体上都是由prop，event，slot三部分组成。具体的实现，主要还是依靠基础的javascript的能力。
+此前，我也仿照element写了radio和input组件。希望自己能坚持去写这些独立组件，去发现更大的世界。本文的分页组件[源码](https://github.com/occupy5/my-vue-components/blob/master/src/components/MyPagination.vue)在这儿。

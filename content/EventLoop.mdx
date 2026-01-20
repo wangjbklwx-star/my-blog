@@ -1,0 +1,142 @@
+---
+title: 再探js执行机制
+date: 2020-02-24
+tags: ['JavaScript']
+description: 'JS 执行机制深度解析：基于 Event Loop 模型，通过代码推演详细讲解了宏任务（Macro-task）与微任务（Micro-task）的执行差异。'
+---
+## 写在前面
+
+入行前端已两年有余了。之前我在一篇文章中写了——要明白前端领域的变与不变。现在和两年前一样，各种框架层出不穷，让人眼花缭乱。很多时候我也在问自己『这个还需要学吗』。这样很容易让我产生焦虑感。而且在面对新事物时，我经常会感到手足无措。归根结底还是基础知识不扎实，内功不够。这也是我写这篇文章的目的——提升内功，更好的理解『变与不变』。
+
+## 要开始了
+
+先从这段代码开始探索之旅吧
+
+```js
+console.log('开始了')
+
+// setTimeout1
+setTimeout(function () {
+  console.log('timeout1')
+  // promise1
+  new Promise(function (resolve) {
+    console.log('timeout1_promise')
+    resolve()
+  }).then(function () {
+    console.log('timeout1_then')
+  })
+}, 2000)
+
+for (var i = 1; i <= 5; i++) {
+  // setTimeout2
+  setTimeout(function () {
+    console.log(i)
+  }, i * 1000)
+  console.log(i)
+}
+
+// promise2
+new Promise(function (resolve) {
+  console.log('promise1')
+  resolve()
+}).then(function () {
+  console.log('then1')
+})
+
+// setTimeout3
+setTimeout(function () {
+  console.log('timeout2')
+  // promise3
+  new Promise(function (resolve) {
+    console.log('timeout2_promise')
+    resolve()
+  }).then(function () {
+    console.log('timeout2_then')
+  })
+}, 1000)
+
+// promise4
+new Promise(function (resolve) {
+  console.log('promise2')
+  resolve()
+}).then(function () {
+  console.log('then2')
+})
+```
+
+开始之前，喜欢思考问题的小伙伴可能会有两个问题。javascript为什么被设计为单线程语言，为什么又会有同步任务和异步任务的区分。这两个问题，在这里我就不细述了。感兴趣的同学请看阮老师的[这篇文章](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)。
+现在我们来看一下js大致是怎么执行的。
+
+到底哪些是宏任务，哪些是微任务呢。大体上这样区分。
+
+宏任务（macro-task)
+
++ script(整体JavaScript代码)
++ setTimeout()
++ setInterval()
++ setImmediate()
++ I/O
++ UI render
+
+微任务（micro-task)
+
++ promise
++ async/await(同☝)
++ process.nextTick
++ MutationObserver
+
+预备知识已经准备的差不多了，现在我们开始执行上面那段代码。
+
++ 首先整体script进入主线程，遇到`console.log()`，立即输出『开始了』
++ 接下来遇到`setTimeout`，2s后回调函数function()被分发到宏任务Event Queue中（注意这里不是2s后**执行**），这里标记为setTimeout1
++ 遇到`for`，直接执行，同理`setTimeout`中的回调函数被分发到宏任务Event Queue中（这里涉及到闭包的知识），标记为setTimeout2，然后执行`console.log`，输出『1，2，3，4，5』
++ 遇到`promise`,`new Promise`直接执行，输出『promise1』。`then`被分发到微任务Event Queue中，标记为then1
++ 接下来又遇到了一个`setTimeout`，1s后回调函数function()被分发到宏任务Event Queue中，标记为setTimeout3
++ 又遇到`promise`，同理，输出『promise2』，`then`被分发到微任务Event Queue中，标记为then2
+
+第一轮事件循环的宏任务已经执行完毕。Event Queue中的任务如下表所示
+
+| **宏任务**     | **微任务** |
+|:-----------:|:-------:|
+| setTimeout1(2s later) | then1   |
+| setTimeout2(1s later) | then2   |
+| setTimeout3(1s later) |         |
+
+根据上面的流程图，宏任务执行完后，js引擎的监视进程会检查此时有没有可以执行的微任务。这时后分发到微任务Event Queue的`then`将被执行。依次输出『then1』，『then2』
+
+**第一轮事件循环全部执行完毕。**
+
+好了，现在开始第二轮事件循环(1s后)。
+
++ 遇到`setTimeout2`,输出『6』，没有可以执行的微任务。执行新的宏任务。
++ 遇到`setTimeout3`,输出『timout2』，`new promise`立即执行，输出『timeout2_promise』，`then`被分发到微任务Event Queue中。标记为then3
+第二轮事件循环的宏任务执行完毕。Event Queue中的任务如下表所示
+
+| **宏任务**     | **微任务** |
+|:-----------:|:-------:|
+| setTimeout1(1s later) | then3   |
+| setTimeout2(1s later) |         |
+
+同理，宏任务执行完后。执行此轮的微任务then3。
+
+**第二轮事件循环全部执行完毕。**
+
++ 遇到`setTimeout1`，执行`console.log`，输出『timeout1』，`new promise`立即执行，输出『timeout1_promise』,`then`被分发到微任务Event Queue中。标记为then4
++ 第三轮事件循环宏任务执行完毕，执行此轮的微任务`then`，输出『timeout1_then』
+
+**第三轮事件循环执行完毕。**
+
++ `setTimeout2`中依次会产生4个宏任务，每隔1s输出一个6
+
+**至此，整段代码全部执行结束。**
+
+> 总结：宏任务执行完了，执行该宏任务产生的微任务。如果微任务在执行过程中产生新的微任务，则继续执行微任务。微任务执行完毕后，回到宏任务中开始下一轮循环。
+
+## async
+
+## node
+
+## 参考资料
+
++ [说说事件循环机制](https://juejin.im/post/5e5c7f6c518825491b11ce93)
++ [这一次，彻底弄懂 JavaScript 执行机制](https://juejin.im/post/59e85eebf265da430d571f89)

@@ -1,0 +1,253 @@
+---
+title: 2023 Web Components 现状
+date: 2023-04-21 12:00:00
+tags: ['JavaScript', 'CS']
+description: '2023 年 Web Components 生态报告：通过 Microsoft、Salesforce 等实战案例展示其成熟度，并详细梳理了 Shadow DOM 增强、Element Internals、声明式 Shadow DOM 以及 CSS 模块脚本等核心 API 的现状与未来提案。'
+---
+最近，我写了一篇关于[如何构建你的第一个 Web 组件](https://medium.com/@eisenbergeffect/hello-web-components-795ed1bd108e)的文章，以及一些关于[基本的 v1 Web 组件规范的历史和解释](https://medium.com/@eisenbergeffect/about-web-components-7b2a3ed67a78)。但自 2020 年 v1 获得完全支持以来，Web Components 的世界发生了更多的变化。未来还有更多的计划。让我们看一些使用当前标准构建的值得关注的例子，以及调查一些将在 2023 年及以后推出的新的 Web Components 标准工作[^1]。
+
+## Web Components 应用实例
+
+随着所有浏览器都支持 v1 Web Components，[许多公司](https://arewebcomponentsathingyet.com/)已经采用并基于这些新标准构建了重要的业务。以下是我认为值得关注的一些例子。
+
+### YouTube
+
+![youtube](https://blog-assets.shenn.xyz/2023_Web_Component_youtube.webp)
+
+YouTube 是最早采用 Web Components 技术的应用之一，多年来一直使用这种技术构建其界面。检查源代码，你会看到各种自定义元素，从 `ytd-video-preview` 到 `iron-ally-announcer`。
+
+### Photoshop
+
+![photoshop](https://blog-assets.shenn.xyz/2023_Web_Component_photoshop.webp)
+
+是的，Adobe 使用 [Lit](https://lit.dev/) 将 Photoshop 带到了浏览器中。它现在还处于 beta 版本，如果你是 Adobe 的订阅用户，可以自行尝试。整个应用程序中有很多自定义元素，从构成应用程序根的 `psw-app`，到像 `psw-layers-panel` 这样的 shell 元素，再到像 `sp-action-button` 这样的 UI 组件。
+
+### MSN, Edge, Bing, VS Code, and More at Microsoft
+
+![fast](https://blog-assets.shenn.xyz/2023_Web_Component_microsoft.webp)
+
+几年前，微软使用基于 [FAST](https://www.fast.design/) 的 Web Components 重构了 MSN。这将性能提高了 30% 到 50%，比之前使用 React 构建的版本性能更好。
+
+基于 OpenAI 的 New Bing 也是使用 [FAST Web Components](https://www.fast.design/) 构建的，如下面的屏幕截图所示，最近由其中一位开发人员分享。
+
+![bing](https://blog-assets.shenn.xyz/2023_Web_Component_bing.webp)
+
+甚至用于扩展 VS Code 新功能的 Webview UI 工具包，也是使用 [FAST Web Components](https://www.fast.design/) 构建的。
+
+![vs code](https://blog-assets.shenn.xyz/2023_Web_Component_vscode.webp)
+
+在过去三年中，微软大约有 1,500 个团队/项目采用了 [FAST Web Components](https://www.fast.design/)。
+
+### Salesforce
+
+![salesforce](https://blog-assets.shenn.xyz/2023_Web_Component_salesforce.webp)
+
+作为客户关系管理（CRM）、销售和营销自动化平台行业中最大的品牌之一，Salesforce 多年来一直在基于 [Lightning Web Components](https://developer.salesforce.com/docs/component-library/documentation/en/lwc) 进行开发。
+
+### SpaceX
+
+![spacex](https://blog-assets.shenn.xyz/2023_Web_Component_spacex.webp)
+
+如今，Web Components 甚至在太空中也得到了应用。SpaceX 的机组人员显示屏正在运行 Chromium，广泛使用 Web Components。
+
+## 标准现状
+
+Web 标准不断发展，其中包括 Web Components。自从 v1 版本发布到所有主流浏览器以来的三年中，Web Components 下的功能数量几乎翻了一倍。以下是各种已发布、正在进行和计划中的 Web Components 相关标准的图示。
+
+![status](https://blog-assets.shenn.xyz/2023_Web_Component_standard.webp)
+
+让我们逐一查看图示中按照功能划分的六个高级类别中的每一项：组合和作用域、平台互操作性、渲染和性能、样式、包和分发、API 范式。
+
+### 组合和作用域
+
+![scope](https://blog-assets.shenn.xyz/2023_Web_Component_composition_scope.webp)
+
+Web 组件的作用域/封装特性对于传统编程中的信息隐藏、维护、代码库可扩展性等方面同样非常重要。但是，当涉及到 Web Components 时，它们还为 HTML 和 CSS 运行时提供了额外的元数据，可以用来优化绘制和布局。
+
+**Shadow DOM**
+Shadow DOM 是 HTML 中用于作用域、封装和组合 DOM 及相关样式的基本机制。它是一个多方面的特性，具有许多不断扩展的能力。
+
+- **命名插槽分配（全面支持）**—— 原始的 v1 Shadow DOM 规范提供了一种完全声明式的机制，用于在 Shadow DOM 中使用[命名的 `<slot>`元素](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)来定义元素组合的占位符。开发者只需在宿主元素的任何子元素上放置一个 `slot` 属性，浏览器就会自动『插入』该元素的呈现输出到插槽的位置。
+
+- **开放和封闭模式（全面支持）**—— v1 Shadow DOM 规范中的 [attachShadow() API](https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow) 的 `mode` 选项是其中一部分。它允许组件开发者选择其首选的封装模式。`open` 模式允许从宿主元素外部访问 `shadowRoot`，而 `closed` 模式则禁止访问。
+
+- **事件重新定向（全面支持）**—— 当在 Shadow DOM 内部的元素上触发事件时，这些事件会被『重新定向』，以便它们看起来来自宿主 Shadow DOM。这个 v1 Shadow DOM 规范的能力是正确封装内部结构的重要部分。
+
+- **手动插槽分配（全面支持）**—— `slot` 元素上的新的 [assign API](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement/assign) 扩展了 v1 的原始插槽分配功能，除了之前的声明性式插槽机制外，还提供了一种命令式 API。
+
+- **焦点委托（全面支持）**—— 这个在 v1 之后的特性使 Shadow DOM 可以告诉浏览器，当其宿主元素获得焦点时，[它应该将焦点委托](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/delegatesFocus)给 Shadow DOM 中的特定元素。默认情况下，第一个可聚焦的元素被选中，但可以使用 `autofocus` 属性覆盖该行为。
+
+- **Cross-root ARIA（接近共识）**—— 即将到来的特性，与社区和浏览器厂商接近达成共识，[Cross-root ARIA](https://w3c.github.io/webcomponents-cg/2022.html#cross-root-aria) 将极大简化在 Shadow DOM 外部与 Shadow DOM 内部的 ARIA 关键元素相关联的操作。例如，将 Shadow DOM 外部的 `label` 元素与 Shadow DOM 内部的 `input` 元素关联起来。这些类型的 ARIA 场景今天已经有解决方案，但并不是容易实现的。Cross-root ARIA 将大大改善这种情况。
+
+- **在 Shadow CSS 中使用自定义属性（共识）**—— 如今，一些浏览器可以[使用 @property 语法](https://developer.mozilla.org/en-US/docs/Web/CSS/@property)来自定义 CSS 属性。但是，目前在 Shadow DOM 中尚不起作用。CSS 对象模型始终可以从自定义元素代码中来全局定义这些属性，但在 Shadow DOM 中以声明形式提供此功能是一个常识性的改进。这已达成共识，因此希望我们很快就能看到这个功能。[随着浏览器更普遍地支持新的 CSS 语法](https://caniuse.com/?search=%40property)。
+
+**作用域元素注册表（共识）**
+在自定义元素的 v1 规范中，所有元素都通过 `customElements` 全局对象在全局自定义元素注册表中注册。这个新的补充功能使得能够实例化非全局注册表并在其中注册自定义元素。
+
+```javascript
+const myRegistry = new CustomElementRegistry();  
+myRegistry.define("my-element", MyElement);
+```
+
+这个注册表中的元素仅定义为该注册表所分配的 Shadow DOM。这极大地改进了浏览器中的作用域，使得可以按照需要为每个 shadow root 定义元素。当它被应用到浏览器中时，这将会是一个巨大的进步，为新的架构可能性打开了大门。目前，社区和厂商之间已经达成共识，Chromium 正在开发第一个实现。
+
+### 平台互操作性
+
+![](https://blog-assets.shenn.xyz/2023_Web_Component_platform.webp)
+
+Web Components 最重要的方面之一是它们如何在组件和平台之间实现互操作性。让我们看一些当前和未来的特性。
+
+**自定义元素**
+
+- **自治自定义元素（全面支持）——** Web Components v1 的这个核心功能通过向 `customElements` 全局对象注册一个类来[定义继承自 `HTMLElement` 的自定义元素](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)。基本的生命周期回调和观察属性也是规范的一部分。
+
+- **自定义内置元素（已拒绝）——** 最初，有一个提案允许从内置元素（例如 `HTMLParagraphElement`）继承，但 WebKit 实现者发现了几个技术问题，因此已经拒绝了这个规范。它很可能在将来被删除，所以应该避免使用。请参见下面的『自定义属性』，了解可能更好的替代方案。
+
+**Element Internals**
+
+一个 v1 之后的新 API，`ElementInternals`，使得自定义元素能够更深入地与现有的 DOM 子系统进行[平台级集成](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals)。
+
+- **Shadow Root 访问（全面支持）** —— 这个简单的功能添加使组件开发者可以检索一个 `closed` 模式元素的 Shadow Root 实例。如果没有这个功能，具有 `closed` 模式声明式 Shadow DOM 的元素将无法在运行时访问其根节点。
+
+- **与表单关联的自定义元素（全面支持）** —— 这个重要的新功能使得自定义元素能够[完全参与表单](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals/form)，包括表单验证、提交和重置。
+
+- **默认可访问性角色、状态和属性（大多数已支持）** —— [这个新的 API 集合](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals#instance_properties_included_from_aria) 使得可以通过直接在内部与平台进行通信来设置自定义元素的默认可访问性特性，而不是通过可能被用户无意中删除的宿主元素上的外部属性。目前，_除 Firefox 外的所有主要浏览器都支持这个新的 API_，对于 Firefox，则提供了一个 polyfill。由于 Firefox 已经实现了 `ElementInternals` 其他部分的 API，如果他们在不久的将来没有发布这个功能，我会感到惊讶。
+
+**组合选择（共识/无规范）**
+这个改进提出了一个新的 `getComposedRange()` API，用于 [Selection 对象](https://developer.mozilla.org/en-US/docs/Web/API/Selection)，它使得范围的起始和结束可以跨越多个 Shadow Root。它还将提升浏览器在处理这些情况时的一致性。对于 [这个 API 草案](https://w3c.github.io/webcomponents-cg/2022.html#initial-api-summary-quick-api-proposal-0)，有普遍的共识，但在浏览器可以进行实现之前，仍需要一个完整的规范。在 Web Component 的正常开发过程中，你不太可能遇到这种情况。它主要涉及到富文本编辑器的实现。
+
+**自定义属性（已确定）**
+虽然这个功能不一定是 Web Components 的一部分，但它与 Web Components 旨在服务的场景有很高的重叠。这个草案提议启用可重用行为的创建，这些行为可以附加到任何 HTML 元素，遵循类似于 Web Components 的模式。例如，想象一下你想将 Material Design 水波纹效果应用到任何 HTML 元素上，那么这样做会不会很好呢？
+
+```javascript
+<button material-ripple>Click Me</button>
+```
+
+在我为 TPAC 2022 准备的草案提案中，我演示了这个功能的编程模型可能是什么样的：
+
+```javascript
+class MaterialRipple extends Attr {
+  // ownerElement inherited from Attr
+  // name inherited from Attr
+  // value inherited from Attr
+  // ...
+
+  connectedCallback () {
+    // called when the ownerElement is connected to the DOM
+    // or when the attribute is added to an already connected owner
+  }
+
+  disconnectedCallback () {
+    // called when the ownerElement is disconnected from the DOM
+    // or when the attribute is removed from a connected owner
+  }
+
+  attributeChangedCallback() {
+    // called when the value property of this attribute changes
+  }
+}
+
+customAttributes.define("material-ripple", MaterialRipple);
+```
+
+你会注意到，这个模式和生命周期与 Web Components 是一致的。这也将为被拒绝的可定制内置自定义元素提案中的 `is` 属性提供更好、更健壮的替代方案。
+
+### 渲染和性能
+
+![](https://blog-assets.shenn.xyz/2023_Web_Component_rendering.webp)
+
+渲染和性能对于 Web Components 来说非常关键。虽然基本功能已经就位，但这仍然是一个活跃的探索、讨论和未来创新的领域。
+
+**HTML Template 元素（全面支持）**
+
+`HTMLTemplateElement`及其定义惰性 HTML 内容的能力是 v1 Web 组件功能的关键部分。在引入该元素之前，没有办法声明不会被浏览器激活的 HTML，因此很难创建需要在需求时重复渲染相同 HTML 的组件。
+
+**声明式 Shadow DOM（大多数支持）**
+Shadow DOM 的 v1 规范仅允许通过 `attachShadow()` JavaScript API 创建 Shadow Root。[这个 Shadow DOM 的新增增强功能](https://developer.chrome.com/articles/declarative-shadow-dom/)允许在 HTML 中完全声明 Shadow DOM 内容，无需使用 JavaScript，为服务器框架提供了有趣的可能性。
+
+```javascript
+<host-element>  
+  <template shadowrootmode="open">  
+  <slot></slot>  
+  </template>  
+  <h2>Light content</h2>>  
+</host-element>
+```
+
+这个规范重用了 `template` 元素。不要被这个搞混了。它不是一个模板，它是由 HTML 解析器流入 Shadow Root 的活动 DOM。
+
+_当前除了 Firefox 之外，所有浏览器都支持声明式 Shadow DOM。_ 如果需要，该功能可以通过几行 JavaScript 代码进行 polyfill。
+
+**子节点更改回调函数（提议）**
+Web Components 在自定义元素的 v1 规范中有一个明确定义的生命周期，但这并不意味着我们不能在未来扩展这个生命周期。其中一个常见的对于开发者的挑战是使 Web Component 能够对子节点的添加或删除做出响应。虽然现在可以使用 [slotchange事件](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement/slotchange_event) 和 [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) 实现这一点，但是如果有一个像 `childrenChangedCallback()` 这样的生命周期回调函数，可以提供更好的性能、简化和与 HTML 解析器本身的集成，那就更好了。目前有一个[草案提议](https://w3c.github.io/webcomponents-cg/2022.html#children-changed-callback)，并且实现者也表现出了兴趣。需要一份完整的提案来推动这个功能进入下一个阶段。
+
+**模板实例化**
+虽然 HTML 有模板，但它还没有一种机制来实例化与数据连接的模板，并在其相关数据更改时更新它们。这个『模板实例化』的领域有几个独立有价值的部分。
+
+- **DOM 部件（提议）** - [这个提案](https://w3c.github.io/webcomponents-cg/2022.html#initial-api-summary-quick-api-proposal-10) 将提供一种标准机制，在 DOM 树的特定位置插入或替换内容。你可以把它看作是一种低级别的启用器，帮助创建更高效的模板引擎和批量更新现有的 Web Component 库和 JavaScript 框架。它不提供响应性解决方案或模板语法，只提供定位和更新 DOM 部分的低级别标准基础设施。
+- **模板语法（已确定）** - 一旦定位和批量更新的低级别基础设施就位并被现有库成功使用，那么关于语法的大辩论就会开始。模板语法是一个非常有争议的问题，但我们已经认识到 HTML 应该有一个基本的语言来处理这个问题，即使它只是为其他库提供编译目标。
+- **响应性（已确定）** - DOM 部件提供批量更新 DOM 的标准机制。模板语法提供声明式机制来创建 DOM 部分。剩下的是确定何时应执行 DOM 部件更新的机制。这就是响应性的作用，以完成整个图景。这是另一个有争议的问题，但已经有一些先例，例如通过 Web Components 的 `attributeChangedCallback()`。这个主题需要更多的探索。
+
+模板实例化工作类别被分解为上述三个子特性，旨在先解决某些较少有争议的问题，并为现有库和框架提供路径，以利用不那么主观的、改进性能的功能，避免在社区中引起过多争议。
+
+### 样式
+
+![](https://blog-assets.shenn.xyz/2023_Web_Component_styling.webp)
+
+虽然 Shadow DOM 提供了样式的封装，但有许多 CSS 特性直接与 Web Components 相关，并且在日常使用中非常重要。
+
+**使用**
+有几项当前和未来的标准与 Web Components 如何使用样式来创建 Shadow DOM 的呈现方式有关。虽然一直以来都可以在 Shadow DOM 中创建样式元素，但新标准提供了更好的可读性和性能优势。
+
+- **可构建样式表（全面支持）** — 你知道在这个标准之前实际上无法创建 `CSSStyleSheet` 实例吗？这个标准修复了这个问题，现在您可以编写代码 `new CSSStyleSheet()`。这种能力使得在 Web Components 中更动态地创建和使用样式成为可能，包括在组件之间共享样式表。
+- **采用样式表（全面支持）** — 针对给定的 `CSSStyleSheet` 实例，如何将其与特定的 Shadow Root 或全局 document 关联起来？[这个新标准](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptedStyleSheets) 在 `document` 和所有 Shadow Root 实例中添加了一个 `adoptedStyleSheets` 数组。只需将样式表推入该数组中，就可以开始使用了。
+- **CSS 模块脚本（Chromium）** — 可构建样式表和采用样式表本身提供了创建、共享和关联文档表的原始机制，但仍需要在 JavaScript 中编写 CSS 代码。[CSS 模块脚本标准](https://w3c.github.io/webcomponents-cg/2022.html#css-module-scripts) 允许使用 JavaScript 模块导入`.css` 文件，从而平台会自动创建一个 `CSSStyleSheet` 实例，无需在 CSS 运行时和 JavaScript 运行时之间来回切换。
+- **声明式 CSS 模块（已确定）** — 随着声明式 Shadow DOM 和采用样式表的出现，已经创建了几个临时提议，以便声明 CSS 模块并将其与声明式 Shadow DOM 关联。这方面需要更多的探索，但这是 HTML 和 CSS 未来的一个令人兴奋的可能性。
+
+**呈现**
+主要来说，CSS 关注的是呈现方面的问题。有一些标准扩展了 Web Components 的样式设置的可能性。
+
+不仅仅是 Web Components，对于创建组件系统来说，[自定义 CSS 属性](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) 是一个非常重要的规范，它能够创建本地 CSS 变量，并可以在 shadow roots 中使用。
+
+- **CSS Shadow Parts（全面支持）** — [CSS 部分](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) 允许在 Shadow DOM 中声明元素作为『部分』，可以使用外部选择器对其进行样式设置。这是通过 `part` 属性和 [the exportparts 属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts) 实现的，用于嵌套场景。
+- **CSS 自定义状态（Chromium）** — 原生元素可以具有自定义状态，在 CSS 选择器中可用。例如，复选框的『已选中』和『未选中』状态。[这个新功能](https://developer.mozilla.org/en-US/docs/Web/API/CustomStateSet) 允许 Web Components 定义自己的状态。已经达成共识，Chromium 已经发布了第一个实现，可以通过 `ElementInternals` 访问。在等待其他浏览器跟进时，可以使用 polyfill 进行支持。
+- **CSS 主题（提议）** — 尽管可以通过仔细使用 CSS 自定义属性和 CSS Shadow Parts 来实现丰富的主题化，但可以通过明确地[将主题的概念引入 CSS](https://w3c.github.io/webcomponents-cg/2022.html#theming)来简化和改进这一过程。
+- **开放式 Shadow Root 样式（已确定）** — 尽管可以使用可构建样式表和采用样式表使任何全局 CSS 在 Shadow Root 中共享，但对于普通 Web 开发人员来说，这可能不是一个直观的过程。有一些探索机制的方法，明确选择允许外部 CSS 进入某些 shadow roots。
+
+### 打包和分发
+
+![](https://blog-assets.shenn.xyz/2023_Web_Component_package.webp)
+
+到目前为止，我们主要谈论了与 Web Components 实现相关的标准。但同样重要的是考虑组件如何打包和加载。
+
+**自定义元素懒加载（提议）**
+现在，我们可以使用全局的 `customElements` 注册表定义组件，很快还可以使用自定义注册表。但是，在这两种情况下，在定义组件之前，组件的实现必须已经被加载。使用[自定义元素懒加载](https://w3c.github.io/webcomponents-cg/2022.html#lazy-custom-element-definitions)，开发人员将能够告诉平台有关元素的信息，但是可以延迟加载它，直到元素首次出现在 document 中时才加载。它可能会像这样工作：
+
+```javascript
+customElements.defineLazy(  
+  "my-element",   
+  async () =\> (await import("my-element.js")).default  
+);
+```
+
+这个规范似乎被大多数人认为是一种很好的东西，尤其是对于某些架构来说。然而，该提议的细节仍在争论中。
+
+**HTML 模块脚本（已确定）**
+
+HTML 模块脚本是 CSS 模块脚本的 HTML 等效物。通过 [HTML 模块脚本提案](https://w3c.github.io/webcomponents-cg/2022.html#html-modules)，模板（和其他 HTML 片段）将通过 JS 模块系统直接可导入。目前只有一个草案提案，还需要进一步讨论许多细节，但这被认为是一个重要的长期增强功能，特别是考虑到未来可能存在只有单个 HTML 文件的 Web Components 的情况。
+
+### API 范式
+
+![](https://blog-assets.shenn.xyz/2023_Web_Component_api.webp)
+
+最后一个标准类别与我之前讨论的所有内容有些不同。这些标准涉及 Web Components 的基本编程范式。Web Components v1 主要是一种命令式的 JavaScript 编程模型。有一些值得注意的例外，比如声明式的 slot 分配。但基本上，它完全是命令式的。自 v1 以来，我们一直在努力引入越来越多的声明式特性。其中一个很好的例子是声明式 Shadow DOM。总的来说，最好为所有场景提供声明式和命令式的 API。但最终目标是拥有某种完全声明式定义的 Web Components，以便服务器可以向浏览器发送元素定义，在 noscript 上下文中可以完全工作。我们还有一段路要走，但当我们到达那里时，它将从根本上改变客户端和服务器开发。
+
+## 下一步是什么
+
+标准的工作永远在进行中。事实上，从今天开始，W3C Web 组件社区组正在召开其 2023 年春季面对面活动。就像 TPAC 一样，这是一个机会，供库作者、组件创建者、浏览器厂商等聚集在一起，并花费专门的时间来解决仍需要共识或存在开放问题的规范的细节。我期待在后续的博客文章中向大家更新活动结果。请关注/订阅以确保您获得更新 😄
+
+## 总结
+
+我希望本次的 Web Components 标准之旅对你来说是有意义的。你看到我们已经走了多远，未来还有什么等待我们，这很有趣。随着 v1 版本的发布，过去几年中已经发布的功能翻了一番，以及即将到来令人兴奋的新功能，现在是成为 Web 开发人员的好时机。
+
+[^1]: [原文链接](https://eisenbergeffect.medium.com/2023-state-of-web-components-c8feb21d4f16)

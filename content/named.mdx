@@ -1,0 +1,152 @@
+---
+title: 变量命名的艺术
+date: 2019-07-26
+tags: ['JavaScript', 'CS']
+description: '变量命名指南：一篇关于如何优雅命名 Array、Boolean、Number 和 Function 的译文，旨在通过好的命名提升代码的可读性。'
+---
+这是一篇最近翻译的译文[^1]（也是我的第二篇译文👏），在文章的部分地方做了少许改动，同时也在原文的基础上增加了一些内容。希望不要误人子弟。Have Fun!
+
+> 在计算机科学领域里只有两件事可以称之为难事：缓存失效（cache invalidation）和命名问题（naming things）。—— Phil Karlton
+
+关于命名这件事，在某些时候的确是非常困难的。但却值得我们花费精力去研究它。回顾一下，之前你是否看过类似于这样的代码？
+```js twoslash lineNumbers
+const convertObj = (x, y, z) => {
+    const k = Object.keys(x);
+    return k.map((key) => {
+        return {
+            [y]: key,
+            [z]: x[key],
+        }
+    });
+}
+```
+你能立刻知道它在做些什么吗？当然在你逐行读完这段代码后，可能会理解它想表达什么。但是，如果这段代码中的变量的命名方式更加优雅的话，我们会更容易理解这段内容。
+
+好的变量命名是非常重要的，尤其是在动态类型语言中，因为没法用已经定义好的变量基本类型去帮助你理解该变量确切的含义。然而，如果能够在动态类型的语言中使用好的命名方法，代码较于静态类型的语言会变得更加易读。
+
+接下来我将分享一些有关命名方法的基本规则，这些是我这些年来的经验之谈。通过变量不同的基本类型，对比举出一些例子。就让我们先从数组开始吧。
+## Arrays
+数组对象是有序数据的集合，各项的基本类型大致相同。因为数组包含多个变量值，变量的命名应当是有意义的复数形式。
+```js
+// 很bad很sad很drama
+const fruit = ['apple', 'banana', 'cucumber'];
+// 凑合
+const fruitArr = ['apple', 'banana', 'cucumber'];
+// 还不错
+const fruits = ['apple', 'banana', 'cucumber'];
+// 很好 - "names"暗示数组内容是字符串(strings)
+const fruitNames = ['apple', 'banana', 'cucumber'];
+// 优雅
+const fruits = [{
+    name: 'apple',
+    genus: 'malus'
+}, {
+    name: 'banana',
+    genus: 'musa'
+}, {
+    name: 'cucumber',
+    genus: 'cucumis'
+}];
+```
+## Booleans
+布尔类型只有2个值，`true`或者`false`。变量命名时使用『is』，『has』或者『can』作为前缀，将有助于读者理解变量的类型。
+```js
+// bad
+const open = true;
+const write = true;
+const fruit = true;
+
+// good
+const isOpen = true;
+const canWrite = true;
+const hasFruit = true;
+```
+当遇到predicate函数（该函数返回一个boolean值）时，在具名函数之后命名变量会有些烦人。
+```js
+const user = {
+  fruits: ['apple']
+}
+const hasFruit = (user, fruitName) => {
+  user.fruits.includes(fruitName)
+}
+// 这个时候应该怎么命名这个boolean变量？
+const x = hasFruit(user, 'apple');
+```
+由于我们已经给函数名称加了个`has`的前缀，因此不能再以`hasProjectPermission`这种形式命名x这个boolean变量。在这种情况下，可以给`hasFruit`这个函数加上`check`或者`get`来修饰谓语(has)。
+```js
+const checkHasFruit = (user, fruitName) => {
+  user.fruits.includes(fruitName)
+}
+const hasFruit = checkHasFruit(user, 'apple');
+```
+## Numbers
+至于数字类型，想想有哪些描述数字的词汇。诸如这些词汇，`maximum`,`minimum`,`total`.
+```js
+// bad
+const pugs = 3;
+// good
+const minPugs = 1;
+const maxPugs = 5;
+const totalPugs = 3;
+```
+## Functions
+函数应当使用动词和名词相结合的方式命名，当该函数在对象原型上产生某种行为时，它的名字应当能够体现出这一点。`actionResource`就是一个值得借鉴的命名格式。例如：`getUser`。
+```js
+// bad
+userData(userId);
+userDataFunc(userId);
+totalOfItems(items);
+// good
+getUser(userId);
+calculateTotal(items);
+```
+通常情况下，我使用`to`作为函数名称的前缀来表示转换变量的值。
+```js
+// I like it
+toDollors('euros', 20);
+toUppercase('a string')
+```
+遍历子项的时候，我经常使用这种惯用的命名方式。当接收函数中的一个参数时，应当使用数组名称的单数形式。
+```js
+// bad
+const newFruits = fruits.map(x => {
+  doSomething(x);
+});
+// good
+const newFruits = fruits.map(fruit => {
+  doSomething(fruit)
+})
+```
+## 回到开始
+重构一下开头的那段代码
+```js
+const arrayToObject = (array, id, name) => {
+  const arrayList = Object.keys(array);
+  return arrayList.map((key) => {
+      return {
+          [id]: key,
+          [name]: array[key]
+      }
+  });
+}
+```
+## 三省吾身
+```js
+// 之前命名 => rsshub项目
+// 1. 获取文章列表
+const list = $('.con_list li h3')
+      .find('a')
+      .map((i, e) => $(e).attr('href'))
+      .get();
+// 2. 对遍历出的文章地址链接发出请求
+const res = await got.get(itemUrl);
+
+// 改进命名
+const articleLists = $('.con_list li h3')
+      .find('a')
+      .map((i, list) => $(list).attr('href'))
+      .get();
+
+const responseData = await got.get(itemUrl);
+```
+[^1]: [原文链接](https://hackernoon.com/the-art-of-naming-variables-52f44de00aad)

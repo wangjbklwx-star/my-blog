@@ -1,0 +1,82 @@
+---
+title: terminal折腾记之Mac篇
+date: 2018-10-20
+tags: ['Fun']
+description: '本文记录了在 Mac 下对终端进行美化和功能增强的过程。通过配置 iTerm2、oh-my-zsh 以及 powerlevel9k 主题，配合自动补全和语法高亮插件，打造了一个既美观又高效的终端环境，并解决了 VS Code 中的字体适配问题。'
+---
+
+作为除了编辑器，浏览器之外，每天接触**第二多**的东西——终端。是要来好好折腾一番了。之前，我就下载了oh-my-zsh。但是使用的一直是它的默认主题——robbyrussell。这个主题，其实很不错了，相比于自带的zsh已经是非常的简洁美观。可是身为一个前端er,不折腾怎么能行了🌊。
+
+## 折腾前的准备
+1. [iTerm2](https://www.iterm2.com/downloads.html)
+2. [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
+3. [powerline font](https://github.com/powerline/fonts)
+
+具体的安装步骤，就不再赘述了，大家可以去文档里查看。
+## 需要做的配置
+### iTerm颜色主题
+这个[主题库](https://github.com/mbadolato/iTerm2-Color-Schemes)包含了170+种主题。可以把文件下载到本地，然后导入到color presets中就好了（使用快捷键cmd + i）。
+
+### zsh主题
+我使用的是[powerlevel9k](https://github.com/bhilburn/powerlevel9k),它可以对终端进行进一步的个性化定制，就像这样🌰。
+
+#### 安装powerlevel9k
+1. clone主题的仓库地址
+```shell
+$ git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+```
+2. 在.zsh中设定主题
+```shell
+ZSH_THEME="powerlevel9k/powerlevel9k"
+```
+
+## zsh相关插件
+
+* [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
+* [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+
+这是我推荐的两个插件，当然，你也可以添加一些其他的插件。具体[地址](https://github.com/zsh-users)在这里。
+
+### 安装zsh插件的两种方式
+#### oh-my-zsh方式
+
+1. clone插件的仓库地址
+
+```shell
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
+2. 在~/.zshrc中找到plugins,添加这个插件
+
+```shell
+plugins = (
+    git
+    rails
+    zsh-autosuggestions
+)
+```
+
+#### .zshrc方式
+
+1. 同上
+2. 在.zshrc中添加一行
+
+```shell
+source ./zsh-syntax-highlighting/zsh-syntax-highlighting.
+```
+
+## 其他
+
+### 隐藏用户信息
+打开终端后会发现，总是有一段长长的用户信息前缀。感觉有些多余，我们如何来隐藏它呢。记得之前使用robbyrussell主题时是没有的，所以很有可能是主题文件的原因。于是打开powerlevel9k.zsh-theme文件（注意看上文clone的路径）。
+```shell
+# Note that if $DEFAULT_USER is not set, this prompt segment will always print
+```
+所以解决的方法就是在.zshrc中设置默认用户名就好了。
+
+### vs code配置
+
+完成以上步骤之后，一个颜值又高又好用的terminal就此诞生了。让我们打开vs code，撸起袖子加油干吧。等下，乱码又是什么桂？原来是忘记设定终端字体了，打开settings.json文件，把下面这行加上去就好了。
+```shell
+"terminal.integrated.fontFamily": "Meslo LG M（你使用的字体） for Powerline"
+```
