@@ -49,7 +49,7 @@ const Page = async (props: PageProps<'/posts/[slug]'>) => {
       lastUpdate={lastUpdate}
       editOnGithub={{
         repo: 'blog',
-        owner: 'shenn.xyz',
+        owner: 'occupy5',
         sha: 'main',
         path,
       }}
