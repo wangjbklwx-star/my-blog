@@ -34,8 +34,6 @@ const Page = async (props: PageProps<'/posts/[slug]'>) => {
     timeZone: 'Asia/Shanghai',
   });
 
-  const lastModified = post.data.lastModified;
-  const lastUpdate = lastModified ? new Date(lastModified) : undefined;
   const tags = post.data.tags ?? [];
 
   const path = `content/${post.path}`;
@@ -46,7 +44,6 @@ const Page = async (props: PageProps<'/posts/[slug]'>) => {
     <PostsPage
       toc={post.data.toc}
       full={post.data.full}
-      lastUpdate={lastUpdate}
       editOnGithub={{
         repo: 'blog',
         owner: 'occupy5',
