@@ -52,4 +52,18 @@
   code {
     font-family: var(--font-jetbrains-mono);
   }
+  html {
+    scroll-behavior: smooth;
+  }
+  /* footnote 跳转 */
+  [id^="fnref"],
+  [id^="user-content-fnref"] {
+    scroll-margin-top: 5.5rem;
+    display: inline-block;
+  }
+
+  [id^="fn-"],
+  [id^="user-content-fn-"] {
+    scroll-margin-top: 5.5rem;
+  }
 }
