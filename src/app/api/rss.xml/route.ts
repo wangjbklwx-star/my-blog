@@ -1,5 +1,4 @@
 import { Feed } from 'feed';
-import { description, title } from '@/app/layout.config';
 import { getPosts } from '@/lib/source';
 
 export const dynamic = 'force-static';
@@ -19,8 +18,8 @@ export const GET = () => {
   );
 
   const feed = new Feed({
-    title,
-    description,
+    title:'不求谌解',
+    description: '💻 Web Dev / Creative 💗 ⚽ 🎧 🏓',
     id: baseUrl.href,
     copyright: 'shenn.xyz',
     link: baseUrl.href,
