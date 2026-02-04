@@ -1,7 +1,8 @@
 'use client';
 
-import { use, useEffect, useId, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { renderMermaid, THEMES } from 'beautiful-mermaid';
 
 export function Mermaid({ chart }: { chart: string }) {
   const [mounted, setMounted] = useState(false);
@@ -10,15 +11,16 @@ export function Mermaid({ chart }: { chart: string }) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return;
+  if (!mounted) return null;
+  
   return <MermaidContent chart={chart} />;
 }
 
-const cache = new Map<string, Promise<unknown>>();
+const cache = new Map<string, Promise<string>>();
 
-function cachePromise<T>(key: string, setPromise: () => Promise<T>): Promise<T> {
+function cachePromise(key: string, setPromise: () => Promise<string>): Promise<string> {
   const cached = cache.get(key);
-  if (cached) return cached as Promise<T>;
+  if (cached) return cached;
 
   const promise = setPromise();
   cache.set(key, promise);
@@ -26,29 +28,21 @@ function cachePromise<T>(key: string, setPromise: () => Promise<T>): Promise<T> 
 }
 
 function MermaidContent({ chart }: { chart: string }) {
-  const id = useId();
   const { resolvedTheme } = useTheme();
-  const { default: mermaid } = use(cachePromise('mermaid', () => import('mermaid')));
 
-  mermaid.initialize({
-    startOnLoad: false,
-    securityLevel: 'loose',
-    fontFamily: 'inherit',
-    themeCSS: 'margin: 1.5rem auto 0;',
-    theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
-  });
+  const baseTheme = resolvedTheme === 'dark' ? THEMES['catppuccin-mocha'] : THEMES['catppuccin-latte'];
 
-  const { svg, bindFunctions } = use(
-    cachePromise(`${chart}-${resolvedTheme}`, () => {
-      return mermaid.render(id, chart.replaceAll('\\n', '\n'));
-    }),
+  const svg = use(
+    cachePromise(`${chart}-${resolvedTheme}`, async () => {
+      const code = chart.replaceAll('\\n', '\n');
+      
+      return renderMermaid(code, baseTheme);
+    })
   );
 
   return (
     <div
-      ref={(container) => {
-        if (container) bindFunctions?.(container);
-      }}
+      className="flex justify-center my-6 overflow-x-auto"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

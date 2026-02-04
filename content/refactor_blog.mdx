@@ -78,14 +78,22 @@ console.log(user.role);
 直接在 Markdown 中描述业务逻辑，对于解释技术架构非常有用。
 
 ```mermaid
-sequenceDiagram
-    critical Establish a connection to the DB
-        Service-->DB: connect
-    option Network timeout
-        Service-->Service: Log error
-    option Credentials rejected
-        Service-->Service: Log different error
-    end
+graph LR
+    subgraph clients [Client Layer]
+    A([Web App]) --> B[API Gateway]
+    C([Mobile App]) --> B
+end
+    subgraph services [Service Layer]
+    B --> D[Auth Service]
+    B --> E[User Service]
+    B --> F[Order Service]
+end
+    subgraph data [Data Layer]
+    D --> G[(Auth DB)]
+    E --> H[(User DB)]
+    F --> I[(Order DB)]
+    F --> J([Message Queue])
+end
 ```
 
 #### KaTeX 数学公式

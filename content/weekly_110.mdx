@@ -14,36 +14,37 @@ description: '深入解析现代浏览器的工作原理，从 Chrome 的多进�
 ## 多进程架构
 
 > 操作系统之上的操作系统
-
 ```mermaid
-graph TB
-    subgraph Chrome Browser
-        subgraph Browser Process
+graph LR
+    subgraph Chrome_Browser ["Chrome Browser"]
+        direction LR
+        
+        subgraph Browser_Process ["Browser Process"]
             UIThread[UI Thread]
             Network[Network]
             Storage[Storage]
         end
         
-        subgraph Renderer Process
+        subgraph Renderer_Process ["Renderer Process"]
             MainThread[Main Thread]
             WorkerThreads[Worker Threads]
             CompositorThread[Compositor Thread]
             RasterizerThread[Rasterizer Thread]
         end
         
-        subgraph GPU Process
+        subgraph GPU_Process ["GPU Process"]
             GPUThread[GPU Thread]
         end
 
-        subgraph Plugin Process
+        subgraph Plugin_Process ["Plugin Process"]
             PluginThreads[Plugin Threads]
         end
 
-        subgraph Extension Process
+        subgraph Extension_Process ["Extension Process"]
             ExtensionThreads[Extension Threads]
         end
         
-        subgraph Utility Process
+        subgraph Utility_Process ["Utility Process"]
             UtilityTasks[Various Utility Tasks]
         end
     end
