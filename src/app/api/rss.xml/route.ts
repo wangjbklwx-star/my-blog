@@ -1,5 +1,7 @@
 import { Feed } from 'feed';
 import { getPosts } from '@/lib/source';
+import fs from 'fs';
+import path from 'path';
 
 export const dynamic = 'force-static';
 
@@ -12,51 +14,38 @@ const escapeForXML = (str: string) => {
     .replace(/'/g, '&apos;');
 };
 
-// 获取文章全文的函数
-const getPostContent = async (slug: string): Promise<string> => {
+// 直接从文件读取文章全文
+const getPostContent = (slug: string): string => {
   try {
-    // 尝试从 source 获取正文内容
-    const { getPost } = await import('@/lib/source');
-    const post = await getPost([slug]);  // 修复：改成数组
-    
-    if (post?.content) {
-      // 如果有 content，返回 HTML 或纯文本
-      return post.content;
-    }
-    
-    // 备选方案：直接读取 MDX 文件
-    const fs = await import('fs');
-    const path = await import('path');
-    
     const contentDir = path.join(process.cwd(), 'content');
     const filePath = path.join(contentDir, `${slug}.mdx`);
     
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf-8');
-      // 移除 frontmatter，返回正文
+      // 移除 frontmatter (---...---)
       return content.replace(/^---[\s\S]*?---\n*/, '').trim();
     }
     
     return '';
   } catch (error) {
-    console.error(`Failed to get content for ${slug}:`, error);
+    console.error(`Failed to read ${slug}:`, error);
     return '';
   }
 };
 
-// 将 Markdown/MDX 转为纯文本（用于 RSS description）
+// 将 Markdown 转为纯文本
 const markdownToText = (markdown: string): string => {
   return markdown
-    .replace(/```[\s\S]*?```/g, '') // 移除代码块
-    .replace(/`([^`]+)`/g, '$1') // 移除行内代码标记
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // 链接转为文本
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '') // 移除图片
-    .replace(/#{1,6}\s/g, '') // 移除标题标记
-    .replace(/\*\*|__/g, '') // 移除粗体
-    .replace(/\*|_/g, '') // 移除斜体
-    .replace(/>/g, '') // 移除引用
-    .replace(/-\s/g, '') // 移除列表标记
-    .replace(/\n\s*\n/g, '\n') // 合并空行
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+    .replace(/#{1,6}\s/g, '')
+    .replace(/\*\*|__/g, '')
+    .replace(/\*|_/g, '')
+    .replace(/>/g, '')
+    .replace(/-\s/g, '')
+    .replace(/\n\s*\n/g, '\n')
     .trim();
 };
 
@@ -81,8 +70,9 @@ export const GET = async () => {
   const posts = getPosts();
 
   for (const post of posts) {
-    // 获取文章全文
-    const fullContent = await getPostContent(post.data.slug || post.url.split('/').pop() || '');
+    // 从 URL 提取 slug
+    const slug = post.url.replace(/^\/|\/$/g, '').split('/').pop() || '';
+    const fullContent = getPostContent(slug);
     const textContent = markdownToText(fullContent);
     
     const imageParams = new URLSearchParams();
