@@ -3,43 +3,45 @@
 @import "fumadocs-ui/css/preset.css";
 @import 'fumadocs-twoslash/twoslash.css';
 
-/* @theme {
-  --color-fd-background: #f5f9ff;
-  --color-fd-foreground: #1e2030;
-  --color-fd-border: #e1e2e7;
-  --color-fd-ring: #3760bf;
-  --color-fd-primary: #3760bf;
-  --color-fd-primary-foreground: #1e2030;
-  --color-fd-secondary: #f5f9ff;
-  --color-fd-secondary-foreground: #1e2030;
-  --color-fd-accent: #e1e2e7;
-  --color-fd-accent-foreground: #1e2030;
-  --color-fd-muted: #f5f9ff;
-  --color-fd-muted-foreground: #1e2030;
-  --color-fd-card: #f5f9ff;
-  --color-fd-card-foreground: #1e2030;
-  --color-fd-popover: #f5f9ff;
-  --color-fd-popover-foreground: #1e2030;
+@theme {
+  /* 浅色模式 - 蓝色主题 */
+  --color-fd-background: #f8fafc;
+  --color-fd-foreground: #0f172a;
+  --color-fd-border: #e2e8f0;
+  --color-fd-ring: #2563eb;
+  --color-fd-primary: #2563eb;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #f1f5f9;
+  --color-fd-secondary-foreground: #0f172a;
+  --color-fd-accent: #e2e8f0;
+  --color-fd-accent-foreground: #0f172a;
+  --color-fd-muted: #f1f5f9;
+  --color-fd-muted-foreground: #64748b;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #0f172a;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #0f172a;
 }
 
 .dark {
-  --color-fd-background: #1e2030;
-  --color-fd-foreground: #c8d3f5;
-  --color-fd-border: #2f334d;
-  --color-fd-ring: #5b90ff;
-  --color-fd-primary: #5b90ff;
-  --color-fd-primary-foreground: #1e2030;
-  --color-fd-secondary: #1e2030;
-  --color-fd-secondary-foreground: #c8d3f5;
-  --color-fd-accent: #2f334d;
-  --color-fd-accent-foreground: #c8d3f5;
-  --color-fd-muted: #222436;
-  --color-fd-muted-foreground: #c8d3f5;
-  --color-fd-card: #1e2030;
-  --color-fd-card-foreground: #c8d3f5;
-  --color-fd-popover: #1e2030;
-  --color-fd-popover-foreground: #c8d3f5;
-} */
+  /* 深色模式 - 亮蓝色主题 */
+  --color-fd-background: #0f172a;
+  --color-fd-foreground: #f8fafc;
+  --color-fd-border: #1e293b;
+  --color-fd-ring: #3b82f6;
+  --color-fd-primary: #3b82f6;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #1e293b;
+  --color-fd-secondary-foreground: #f8fafc;
+  --color-fd-accent: #1e293b;
+  --color-fd-accent-foreground: #f8fafc;
+  --color-fd-muted: #1e293b;
+  --color-fd-muted-foreground: #94a3b8;
+  --color-fd-card: #0f172a;
+  --color-fd-card-foreground: #f8fafc;
+  --color-fd-popover: #0f172a;
+  --color-fd-popover-foreground: #f8fafc;
+}
 
 .prose {
   --tw-prose-links: var(--color-fd-primary);
@@ -48,13 +50,27 @@
 @layer base {
   a {
     @apply [overflow-wrap:anywhere];
+    transition: color 0.2s ease;
   }
+  
+  /* 链接悬停变蓝色 */
+  a:hover {
+    color: #2563eb;
+  }
+  
+  /* 深色模式链接悬停 */
+  .dark a:hover {
+    color: #3b82f6;
+  }
+  
   code {
     font-family: var(--font-jetbrains-mono);
   }
+  
   html {
     scroll-behavior: smooth;
   }
+  
   /* footnote 跳转 */
   [id^="fnref"],
   [id^="user-content-fnref"] {
@@ -65,5 +81,22 @@
   [id^="fn-"],
   [id^="user-content-fn-"] {
     scroll-margin-top: 5.5rem;
+  }
+}
+
+@layer utilities {
+  /* 按钮悬停效果 */
+  button:hover,
+  [role="button"]:hover,
+  .btn:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+  
+  .dark button:hover,
+  .dark [role="button"]:hover,
+  .dark .btn:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
   }
 }
