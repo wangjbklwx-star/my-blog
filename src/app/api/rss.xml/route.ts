@@ -17,7 +17,7 @@ const getPostContent = async (slug: string): Promise<string> => {
   try {
     // 尝试从 source 获取正文内容
     const { getPost } = await import('@/lib/source');
-    const post = await getPost(slug);
+    const post = await getPost([slug]);  // 修复：改成数组
     
     if (post?.content) {
       // 如果有 content，返回 HTML 或纯文本
@@ -61,7 +61,6 @@ const markdownToText = (markdown: string): string => {
 };
 
 export const GET = async () => {
-  // 修复：正确的 URL 格式（双斜杠）
   const baseUrl = new URL('https://wangjb.appinn.me');
 
   const feed = new Feed({
@@ -92,9 +91,8 @@ export const GET = async () => {
 
     feed.addItem({
       title: post.data.title,
-      // 使用全文作为 content，纯文本作为 description
       description: post.data.description || textContent.slice(0, 200) + (textContent.length > 200 ? '...' : ''),
-      content: escapeForXML(fullContent), // 全文内容（HTML 格式）
+      content: escapeForXML(fullContent),
       link: new URL(post.url, baseUrl).href,
       image: {
         title: post.data.title,
