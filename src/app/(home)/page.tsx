@@ -10,10 +10,10 @@ const Page = () => {
       <div className="flex items-end justify-between border-b border-fd-border/50 pb-4">
         <div className="space-y-1">
           <h2 className="text-3xl font-bold tracking-tight text-fd-foreground">
-            不求谌解
+            王浚博的博客
           </h2>
           <p className="text-sm text-fd-muted-foreground">
-            有关技术思考与生活笔记
+            有什么好玩————科技划界，拒绝平庸
           </p>
         </div>
 
