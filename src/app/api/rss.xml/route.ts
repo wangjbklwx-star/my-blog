@@ -6,6 +6,15 @@ import { marked } from 'marked';
 
 export const dynamic = 'force-static';
 
+const escapeForXML = (str: string): string => {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+};
+
 // 获取文章全文
 const getPostContent = (slug: string): string => {
   try {
@@ -46,23 +55,25 @@ export const GET = async () => {
   for (const post of posts) {
     const slug = post.url.replace(/^\/|\/$/g, '').split('/').pop() || '';
     const markdownContent = getPostContent(slug);
-    
-    // 使用 marked 把 Markdown 转成 HTML（加 await）
     const htmlContent = await marked(markdownContent);
     
-    const imageParams = new URLSearchParams();
-    imageParams.set('title', post.data.title);
-    imageParams.set('description', post.data.description ?? '');
-
+    // 修复：正确构建 OG 图片 URL，避免空格
+    const imageUrl = new URL('/api/og', baseUrl);
+    imageUrl.searchParams.set('title', post.data.title);
+    if (post.data.description) {
+      imageUrl.searchParams.set('description', post.data.description);
+    }
+    
     feed.addItem({
       title: post.data.title,
       description: post.data.description || markdownContent.slice(0, 200).replace(/\n/g, ' '),
-      content: htmlContent,  // HTML 格式，图片代码直接显示
+      content: htmlContent,
       link: new URL(post.url, baseUrl).href,
-      image: {
-        title: post.data.title,
+      // 修复：使用正确的 enclosure 格式
+      enclosure: {
+        url: imageUrl.href,
         type: 'image/png',
-        url: new URL(`/api/og?${imageParams}`, baseUrl).href,
+        title: post.data.title,
       },
       date: post.data.date,
       author: [
