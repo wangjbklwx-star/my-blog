@@ -2,7 +2,7 @@ import { Feed } from 'feed';
 import { getPosts } from '@/lib/source';
 import fs from 'fs';
 import path from 'path';
-import { marked } from 'marked';  // ← 导入 marked
+import { marked } from 'marked';
 
 export const dynamic = 'force-static';
 
@@ -47,8 +47,8 @@ export const GET = async () => {
     const slug = post.url.replace(/^\/|\/$/g, '').split('/').pop() || '';
     const markdownContent = getPostContent(slug);
     
-    // 用 marked 把 Markdown 转成 HTML
-    const htmlContent = marked(markdownContent);
+    // 使用 marked 把 Markdown 转成 HTML（加 await）
+    const htmlContent = await marked(markdownContent);
     
     const imageParams = new URLSearchParams();
     imageParams.set('title', post.data.title);
@@ -57,7 +57,7 @@ export const GET = async () => {
     feed.addItem({
       title: post.data.title,
       description: post.data.description || markdownContent.slice(0, 200).replace(/\n/g, ' '),
-      content: htmlContent,  // ← HTML 格式，图片代码直接显示
+      content: htmlContent,  // HTML 格式，图片代码直接显示
       link: new URL(post.url, baseUrl).href,
       image: {
         title: post.data.title,
