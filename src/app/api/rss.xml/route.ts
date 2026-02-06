@@ -2,19 +2,11 @@ import { Feed } from 'feed';
 import { getPosts } from '@/lib/source';
 import fs from 'fs';
 import path from 'path';
+import { marked } from 'marked';  // ← 导入 marked
 
 export const dynamic = 'force-static';
 
-const escapeForXML = (str: string) => {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-};
-
-// 直接从文件读取文章全文
+// 获取文章全文
 const getPostContent = (slug: string): string => {
   try {
     const contentDir = path.join(process.cwd(), 'content');
@@ -22,31 +14,13 @@ const getPostContent = (slug: string): string => {
     
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf-8');
-      // 移除 frontmatter (---...---)
       return content.replace(/^---[\s\S]*?---\n*/, '').trim();
     }
-    
     return '';
   } catch (error) {
     console.error(`Failed to read ${slug}:`, error);
     return '';
   }
-};
-
-// 将 Markdown 转为纯文本
-const markdownToText = (markdown: string): string => {
-  return markdown
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
-    .replace(/#{1,6}\s/g, '')
-    .replace(/\*\*|__/g, '')
-    .replace(/\*|_/g, '')
-    .replace(/>/g, '')
-    .replace(/-\s/g, '')
-    .replace(/\n\s*\n/g, '\n')
-    .trim();
 };
 
 export const GET = async () => {
@@ -70,10 +44,11 @@ export const GET = async () => {
   const posts = getPosts();
 
   for (const post of posts) {
-    // 从 URL 提取 slug
     const slug = post.url.replace(/^\/|\/$/g, '').split('/').pop() || '';
-    const fullContent = getPostContent(slug);
-    const textContent = markdownToText(fullContent);
+    const markdownContent = getPostContent(slug);
+    
+    // 用 marked 把 Markdown 转成 HTML
+    const htmlContent = marked(markdownContent);
     
     const imageParams = new URLSearchParams();
     imageParams.set('title', post.data.title);
@@ -81,13 +56,13 @@ export const GET = async () => {
 
     feed.addItem({
       title: post.data.title,
-      description: post.data.description || textContent.slice(0, 200) + (textContent.length > 200 ? '...' : ''),
-      content: escapeForXML(fullContent),
+      description: post.data.description || markdownContent.slice(0, 200).replace(/\n/g, ' '),
+      content: htmlContent,  // ← HTML 格式，图片代码直接显示
       link: new URL(post.url, baseUrl).href,
       image: {
         title: post.data.title,
         type: 'image/png',
-        url: escapeForXML(new URL(`/api/og?${imageParams}`, baseUrl).href),
+        url: new URL(`/api/og?${imageParams}`, baseUrl).href,
       },
       date: post.data.date,
       author: [
