@@ -6,15 +6,6 @@ import { marked } from 'marked';
 
 export const dynamic = 'force-static';
 
-const escapeForXML = (str: string): string => {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-};
-
 // 获取文章全文
 const getPostContent = (slug: string): string => {
   try {
@@ -57,24 +48,19 @@ export const GET = async () => {
     const markdownContent = getPostContent(slug);
     const htmlContent = await marked(markdownContent);
     
-    // 修复：正确构建 OG 图片 URL，避免空格
+    // 构建 OG 图片 URL
     const imageUrl = new URL('/api/og', baseUrl);
     imageUrl.searchParams.set('title', post.data.title);
     if (post.data.description) {
       imageUrl.searchParams.set('description', post.data.description);
     }
-    
+
     feed.addItem({
       title: post.data.title,
       description: post.data.description || markdownContent.slice(0, 200).replace(/\n/g, ' '),
-      content: htmlContent,
+      // 在 content 里加上图片
+      content: `<p><img src="${imageUrl.href}" alt="${post.data.title}"></p>` + htmlContent,
       link: new URL(post.url, baseUrl).href,
-      // 修复：使用正确的 enclosure 格式
-      enclosure: {
-        url: imageUrl.href,
-        type: 'image/png',
-        title: post.data.title,
-      },
       date: post.data.date,
       author: [
         {
