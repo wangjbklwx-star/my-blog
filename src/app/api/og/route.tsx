@@ -69,7 +69,7 @@ export const GET = async (req: NextRequest) => {
         fonts: [
           {
             name: 'notoSansSC',
-            data: await loadGoogleFont('Noto+Sans+SC', 'wangjb.appinn.me'),  {/* ← 第2处修改 */}
+            data: await loadGoogleFont('Noto+Sans+SC', 'wangjb.appinn.me'),
             style: 'normal',
           },
         ],
@@ -110,7 +110,7 @@ export const GET = async (req: NextRequest) => {
             marginRight: '4rem',
           }}
         >
-          wangjb.appinn.me  {/* ← 第3处修改 */}
+          wangjb.appinn.me
         </p>
         <div
           style={{
@@ -142,7 +142,7 @@ export const GET = async (req: NextRequest) => {
           name: 'notoSansSC',
           data: await loadGoogleFont(
             'Noto+Sans+SC:wght@600',
-            `wangjb.appinn.me${title}${description}`,  {/* ← 第4处修改 */}
+            `wangjb.appinn.me${title}${description}`,
           ),
           style: 'normal',
         },
