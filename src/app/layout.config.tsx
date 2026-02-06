@@ -3,7 +3,7 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { Newspaper, Rss, Tags } from 'lucide-react';
 
 export const title = '王浚博的博客';
-export const description = "王浚博的博客";
+export const description = "有什么好玩————科技划界，拒绝平庸";
 
 export const baseOptions: BaseLayoutProps = {
   nav: {
