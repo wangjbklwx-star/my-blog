@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 const loadGoogleFont = async (font: string, text: string) => {
-  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
+  const url = `https://fonts.googleapis.com/css2?family= ${font}&text=${encodeURIComponent(text)}`;
   const css = await (await fetch(url)).text();
   const resource = css.match(
     /src: url\((.+)\) format\('(opentype|truetype)'\)/,
@@ -59,7 +59,7 @@ export const GET = async (req: NextRequest) => {
               marginRight: 'auto',
             }}
           >
-            shenn.xyz
+            wangjb.appinn.me
           </p>
         </div>
       </div>,
@@ -69,7 +69,7 @@ export const GET = async (req: NextRequest) => {
         fonts: [
           {
             name: 'notoSansSC',
-            data: await loadGoogleFont('Noto+Sans+SC', 'shenn.xyz'),
+            data: await loadGoogleFont('Noto+Sans+SC', 'wangjb.appinn.me'),  {/* ← 第2处修改 */}
             style: 'normal',
           },
         ],
@@ -110,7 +110,7 @@ export const GET = async (req: NextRequest) => {
             marginRight: '4rem',
           }}
         >
-          shenn.xyz
+          wangjb.appinn.me  {/* ← 第3处修改 */}
         </p>
         <div
           style={{
@@ -142,7 +142,7 @@ export const GET = async (req: NextRequest) => {
           name: 'notoSansSC',
           data: await loadGoogleFont(
             'Noto+Sans+SC:wght@600',
-            `shenn.xyz${title}${description}`,
+            `wangjb.appinn.me${title}${description}`,  {/* ← 第4处修改 */}
           ),
           style: 'normal',
         },
