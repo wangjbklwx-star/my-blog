@@ -3,27 +3,13 @@ import type { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-const loadGoogleFont = async (font: string, text: string) => {
-  const url = `https://fonts.googleapis.com/css2?family= ${font}&text=${encodeURIComponent(text)}`;
-  const css = await (await fetch(url)).text();
-  const resource = css.match(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/,
-  );
-
-  if (resource) {
-    const response = await fetch(resource[1]);
-    if (response.status === 200) {
-      return await response.arrayBuffer();
-    }
-  }
-
-  throw new Error('failed to load font data');
-};
-
 export const GET = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
   const title = searchParams.get('title');
   const description = searchParams.get('description');
+
+  // 系统字体栈
+  const fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji"';
 
   if (!title) {
     return new ImageResponse(
@@ -42,21 +28,16 @@ export const GET = async (req: NextRequest) => {
             fontWeight: 600,
             display: 'flex',
             flexDirection: 'column',
-            marginTop: '2rem',
-            marginBottom: '2rem',
-            marginLeft: '2rem',
-            marginRight: '2rem',
+            margin: '2rem',
             flexGrow: '1',
             borderRadius: '1rem',
+            fontFamily,
           }}
         >
           <p
             style={{
               fontSize: 100,
-              marginTop: 'auto',
-              marginBottom: 'auto',
-              marginLeft: 'auto',
-              marginRight: 'auto',
+              margin: 'auto',
             }}
           >
             wangjb.appinn.me
@@ -66,13 +47,7 @@ export const GET = async (req: NextRequest) => {
       {
         width: 1200,
         height: 630,
-        fonts: [
-          {
-            name: 'notoSansSC',
-            data: await loadGoogleFont('Noto+Sans+SC', 'wangjb.appinn.me'),
-            style: 'normal',
-          },
-        ],
+        // 不指定 fonts，使用系统默认
       },
     );
   }
@@ -93,21 +68,16 @@ export const GET = async (req: NextRequest) => {
           fontWeight: 600,
           display: 'flex',
           flexDirection: 'column',
-          marginTop: '2rem',
-          marginBottom: '2rem',
-          marginLeft: '2rem',
-          marginRight: '2rem',
+          margin: '2rem',
           flexGrow: '1',
           borderRadius: '1rem',
+          fontFamily,
         }}
       >
         <p
           style={{
             fontSize: 50,
-            marginTop: '2rem',
-            marginBottom: 'auto',
-            marginLeft: '4rem',
-            marginRight: '4rem',
+            margin: '2rem 4rem auto',
           }}
         >
           wangjb.appinn.me
@@ -115,8 +85,7 @@ export const GET = async (req: NextRequest) => {
         <div
           style={{
             fontSize: 70,
-            marginLeft: '4rem',
-            marginRight: '4rem',
+            margin: '0 4rem',
           }}
         >
           {title}
@@ -124,10 +93,7 @@ export const GET = async (req: NextRequest) => {
         <div
           style={{
             fontSize: 30,
-            marginTop: 'auto',
-            marginBottom: '2rem',
-            marginLeft: '4rem',
-            marginRight: '4rem',
+            margin: 'auto 4rem 2rem',
           }}
         >
           {description}
@@ -137,16 +103,7 @@ export const GET = async (req: NextRequest) => {
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: 'notoSansSC',
-          data: await loadGoogleFont(
-            'Noto+Sans+SC:wght@600',
-            `wangjb.appinn.me${title}${description}`,
-          ),
-          style: 'normal',
-        },
-      ],
+      // 不指定 fonts，使用系统默认
     },
   );
 };
