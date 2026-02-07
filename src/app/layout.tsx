@@ -20,6 +20,12 @@ const Layout = ({ children }: LayoutProps<'/'>) => {
     <html
       className={`${geist.className} ${jetbrains.variable} antialiased`}
     >
+      <head>
+        <link 
+          rel="stylesheet" 
+          href="https://unpkg.com/@waline/client@v3/dist/waline.css" 
+        />
+      </head>
       <body className='flex min-h-dvh flex-col'>
         <RootProvider
           i18n={{
@@ -43,7 +49,7 @@ export default Layout;
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://wangjb.appinn.me',
   ),
   title,
   description,
