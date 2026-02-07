@@ -85,13 +85,7 @@
 }
 
 @layer utilities {
-  /* 按钮悬停效果 */
-  button:hover,
-  [role="button"]:hover,
-  .btn:hover {
-    background-color: #2563eb;
-    border-color: #2563eb;
-  }
+
   
   .dark button:hover,
   .dark [role="button"]:hover,
