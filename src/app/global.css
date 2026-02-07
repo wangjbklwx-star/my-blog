@@ -118,10 +118,10 @@
 }
 
 /* 强制修复 Waline 深色模式背景 */
-html.dark .waline-wrapper,
-html.dark .waline-card,
-html.dark .waline-input,
-html.dark .waline-textarea {
+.dark .waline-wrapper,
+.dark .waline-card,
+.dark .waline-input,
+.dark .waline-textarea {
   background-color: #0f172a !important;
   color: #f8fafc !important;
 }
