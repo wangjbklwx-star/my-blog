@@ -19,6 +19,7 @@ import { PostJsonLd } from '@/components/json-ld';
 import { LinkPreview } from '@/components/link-preview';
 import { TagCard } from '@/components/tag-card';
 import { getPost, getPosts } from '@/lib/source';
+import { Comments } from '@/components/comments';  // ← 添加这行
 
 export const dynamicParams = false;
 
@@ -80,6 +81,9 @@ const Page = async (props: PageProps<'/posts/[slug]'>) => {
           }}
         />
       </PostsBody>
+      <div className="mt-16">        {/* ← 添加这行 */}
+        <Comments />                  {/* ← 添加这行 */}
+      </div>                          {/* ← 添加这行 */}
       <PostJsonLd post={post} />
     </PostsPage>
   );
@@ -108,7 +112,7 @@ export const generateMetadata = async (props: {
 
   return {
     metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? 'http://wangjb.appinn.me',
+      process.env.NEXT_PUBLIC_SITE_URL ?? 'http://wangjb.appinn.me ',
     ),
     title,
     description,
