@@ -44,12 +44,6 @@ const Page = async (props: PageProps<'/posts/[slug]'>) => {
     <PostsPage
       toc={post.data.toc}
       full={post.data.full}
-      editOnGithub={{
-        repo: 'blog',
-        owner: 'occupy5',
-        sha: 'main',
-        path,
-      }}
       tableOfContent={{
         style: 'clerk',
         single: false,
