@@ -85,8 +85,23 @@
 }
 
 @layer utilities {
+  /* 按钮悬停效果 */
+  button:hover,
+  [role="button"]:hover,
+  .btn:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+  
+  .dark button:hover,
+  .dark [role="button"]:hover,
+  .dark .btn:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+  }
+}  /* ← 这里要闭合 @layer utilities */
 
-/* Waline 颜色适配 */
+/* Waline 颜色适配 - 放在所有 @layer 外面 */
 :root {
   --waline-theme-color: #2563eb !important;
   --waline-active-color: #1d4ed8 !important;
