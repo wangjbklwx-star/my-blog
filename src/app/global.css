@@ -100,3 +100,35 @@
     border-color: #3b82f6;
   }
 }
+/* Waline 颜色适配 - 放在文件最后 */
+:root {
+  /* 浅色模式 - 匹配你的蓝色主题 */
+  --waline-theme-color: #2563eb !important;
+  --waline-active-color: #1d4ed8 !important;
+  --waline-color: #0f172a !important;
+  --waline-bgcolor: #ffffff !important;
+  --waline-bgcolor-light: #f8fafc !important;
+  --waline-bgcolor-hover: #f1f5f9 !important;
+  --waline-border-color: #e2e8f0 !important;
+  --waline-disable-bgcolor: #f1f5f9 !important;
+  --waline-disable-color: #94a3b8 !important;
+  --waline-code-bgcolor: #f1f5f9 !important;
+  --waline-bq-color: #64748b !important;
+  --waline-avatar-radius: 50% !important;
+  --waline-mt: 2rem !important;
+}
+
+.dark {
+  /* 深色模式 - 匹配你的亮蓝色主题 */
+  --waline-theme-color: #3b82f6 !important;
+  --waline-active-color: #60a5fa !important;
+  --waline-color: #f8fafc !important;
+  --waline-bgcolor: #0f172a !important;
+  --waline-bgcolor-light: #1e293b !important;
+  --waline-bgcolor-hover: #1e293b !important;
+  --waline-border-color: #1e293b !important;
+  --waline-disable-bgcolor: #1e293b !important;
+  --waline-disable-color: #64748b !important;
+  --waline-code-bgcolor: #1e293b !important;
+  --waline-bq-color: #94a3b8 !important;
+}
