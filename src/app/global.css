@@ -68,7 +68,7 @@
   }
   
   html {
-    scroll-behavior: smooth;
+    scroll-behaviour: smooth;
   }
   
   /* footnote 跳转 */
@@ -85,24 +85,9 @@
 }
 
 @layer utilities {
-  /* 按钮悬停效果 */
-  button:hover,
-  [role="button"]:hover,
-  .btn:hover {
-    background-color: #2563eb;
-    border-color: #2563eb;
-  }
-  
-  .dark button:hover,
-  .dark [role="button"]:hover,
-  .dark .btn:hover {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-  }
-}
-/* Waline 颜色适配 - 放在文件最后 */
+
+/* Waline 颜色适配 */
 :root {
-  /* 浅色模式 - 匹配你的蓝色主题 */
   --waline-theme-color: #2563eb !important;
   --waline-active-color: #1d4ed8 !important;
   --waline-color: #0f172a !important;
@@ -119,7 +104,6 @@
 }
 
 .dark {
-  /* 深色模式 - 匹配你的亮蓝色主题 */
   --waline-theme-color: #3b82f6 !important;
   --waline-active-color: #60a5fa !important;
   --waline-color: #f8fafc !important;
@@ -131,4 +115,19 @@
   --waline-disable-color: #64748b !important;
   --waline-code-bgcolor: #1e293b !important;
   --waline-bq-color: #94a3b8 !important;
+}
+
+/* 强制修复 Waline 深色模式背景 */
+html.dark .waline-wrapper,
+html.dark .waline-card,
+html.dark .waline-input,
+html.dark .waline-textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* 去掉 Powered by Waline */
+.waline-copyright,
+.waline-footer {
+  display: none !important;
 }
