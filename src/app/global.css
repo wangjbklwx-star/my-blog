@@ -79,9 +79,187 @@
   }
 }
 
+/* ============================================
+   Waline 评论区 - 蓝色主题适配
+   与你的 Fumadocs 设计系统完全兼容
+   ============================================ */
 
+/* 基础变量覆盖 - 蓝色主题 */
+:root {
+  /* 主题色改为蓝色 */
+  --waline-theme-color: #2563eb;
+  --waline-active-color: #3b82f6;
+  
+  /* 布局颜色 - 适配你的浅色主题 */
+  --waline-color: #0f172a;
+  --waline-bg-color: #ffffff;
+  --waline-bg-color-light: #f8fafc;
+  --waline-bg-color-hover: #f1f5f9;
+  --waline-border-color: #e2e8f0;
+  --waline-disable-bg-color: #f1f5f9;
+  --waline-disable-color: #94a3b8;
+  --waline-code-bg-color: #0f172a;
+  
+  /* 特殊颜色 */
+  --waline-bq-color: #f1f5f9;
+  
+  /* 徽章颜色改为蓝色 */
+  --waline-badge-color: #2563eb;
+  
+  /* 信息区域 */
+  --waline-info-bg-color: #f8fafc;
+  --waline-info-color: #64748b;
+}
 
-/* 只隐藏版权信息，不隐藏按钮 */
+/* 深色模式 - 与你的 .dark 类兼容 */
+.dark {
+  /* 主题色 - 稍亮的蓝色 */
+  --waline-theme-color: #3b82f6;
+  --waline-active-color: #60a5fa;
+  
+  /* 布局颜色 - 适配你的深色主题 */
+  --waline-white: #0f172a;
+  --waline-light-grey: #94a3b8;
+  --waline-dark-grey: #cbd5e1;
+  --waline-color: #f8fafc;
+  --waline-bg-color: #0f172a;
+  --waline-bg-color-light: #1e293b;
+  --waline-bg-color-hover: #334155;
+  --waline-border-color: #1e293b;
+  --waline-disable-bg-color: #1e293b;
+  --waline-disable-color: #475569;
+  --waline-code-bg-color: #1e293b;
+  
+  /* 特殊颜色 */
+  --waline-bq-color: #1e293b;
+  
+  /* 徽章颜色 */
+  --waline-badge-color: #3b82f6;
+  
+  /* 信息区域 */
+  --waline-info-bg-color: #1e293b;
+  --waline-info-color: #64748b;
+}
+
+/* ============================================
+   Waline 额外样式微调
+   ============================================ */
+
+/* 输入框聚焦状态 */
+.wl-input:focus,
+.wl-editor:focus {
+  border-color: var(--waline-theme-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dark .wl-input:focus,
+.dark .wl-editor:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* 按钮样式增强 */
+.wl-btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.wl-btn.primary {
+  background: var(--waline-theme-color);
+  color: white;
+}
+
+.wl-btn.primary:hover {
+  background: var(--waline-active-color);
+  transform: translateY(-1px);
+}
+
+/* 评论卡片 */
+.wl-card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--waline-border-color);
+  background: var(--waline-bg-color);
+}
+
+/* 头像 */
+.wl-avatar img {
+  border-radius: 50%;
+  border: 2px solid var(--waline-border-color);
+  transition: border-color 0.2s ease;
+}
+
+.wl-avatar img:hover {
+  border-color: var(--waline-theme-color);
+}
+
+/* 点赞按钮 */
+.wl-like-btn.active {
+  color: var(--waline-theme-color);
+}
+
+/* 回复按钮 */
+.wl-reply-btn {
+  color: var(--waline-theme-color);
+}
+
+/* 代码块 */
+.wl-content pre {
+  background: var(--waline-code-bg-color);
+  border-radius: 0.5rem;
+}
+
+/* 引用块 */
+.wl-content blockquote {
+  border-left: 4px solid var(--waline-theme-color);
+  background: var(--waline-bq-color);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* 链接 */
+.wl-content a {
+  color: var(--waline-theme-color);
+  text-decoration: none;
+}
+
+.wl-content a:hover {
+  text-decoration: underline;
+}
+
+/* 表情选择器 */
+.wl-emoji-popup {
+  border-radius: 0.75rem;
+  border: 1px solid var(--waline-border-color);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.dark .wl-emoji-popup {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* 预览区域 */
+.wl-preview {
+  border-radius: 0.5rem;
+  background: var(--waline-bg-color-light);
+}
+
+/* 通知徽章 */
+.wl-badge {
+  background: var(--waline-badge-color);
+  color: white;
+  font-weight: 600;
+}
+
+/* 加载动画颜色 */
+.wl-loading svg {
+  color: var(--waline-theme-color);
+}
+
+/* 空状态 */
+.wl-empty {
+  color: var(--waline-info-color);
+}
+
+/* 版权信息隐藏 */
 .wl-copyright,
 .wl-power,
 .wl-footer .wl-copyright,
@@ -89,7 +267,6 @@
   display: none;
 }
 
-/* 确保按钮容器可见 */
 .wl-footer {
   display: flex;
 }
