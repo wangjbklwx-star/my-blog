@@ -53,12 +53,10 @@
     transition: color 0.2s ease;
   }
   
-  /* 链接悬停变蓝色 */
   a:hover {
     color: #2563eb;
   }
   
-  /* 深色模式链接悬停 */
   .dark a:hover {
     color: #3b82f6;
   }
@@ -71,7 +69,6 @@
     scroll-behaviour: smooth;
   }
   
-  /* footnote 跳转 */
   [id^="fnref"],
   [id^="user-content-fnref"] {
     scroll-margin-top: 5.5rem;
@@ -85,10 +82,9 @@
 }
 
 @layer utilities {
-  /* 按钮悬停样式已移除，保持默认主题色 */
 }
 
-/* Waline 颜色适配 - 放在所有 @layer 外面 */
+/* Waline 颜色适配 */
 :root {
   --waline-theme-color: #2563eb !important;
   --waline-active-color: #1d4ed8 !important;
@@ -119,7 +115,7 @@
   --waline-bq-color: #94a3b8 !important;
 }
 
-/* Waline 深色模式全面修复 */
+/* Waline 深色模式基础 */
 .dark .waline-wrapper,
 .dark .wl-container,
 .dark .wl-card,
@@ -143,7 +139,7 @@
   border-color: #334155 !important;
 }
 
-/* 输入框特殊处理 */
+/* 输入框 */
 .dark .wl-input,
 .dark .wl-textarea,
 .dark .wl-editor {
@@ -152,48 +148,80 @@
   border: 1px solid #334155 !important;
 }
 
-/* 按钮基础样式 - 确保按钮可见 */
-.dark .wl-btn,
-.dark .wl-login-btn,
+/* ============================================
+   按钮样式
+   ============================================ */
+
+/* 发送按钮 - 实心蓝色（保持默认） */
 .dark .wl-submit-btn,
-.dark button.wl-btn,
-.dark .wl-panel .wl-btn,
-.dark .wl-footer .wl-btn {
+.dark .wl-panel .wl-submit-btn,
+.dark button[type="submit"].wl-btn {
   background-color: #3b82f6 !important;
   color: #ffffff !important;
-  border-color: #3b82f6 !important;
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  border: 1px solid #3b82f6 !important;
 }
 
-/* 按钮悬停效果 */
-.dark .wl-btn:hover,
-.dark .wl-login-btn:hover,
-.dark .wl-submit-btn:hover {
+.dark .wl-submit-btn:hover,
+.dark button[type="submit"].wl-btn:hover {
   background-color: #2563eb !important;
   border-color: #2563eb !important;
 }
 
-/* 评论内容区 */
+/* 其他所有按钮 - 空心描边（登录、预览等） */
+.dark .wl-btn:not(.wl-submit-btn):not([type="submit"]),
+.dark .wl-login-btn,
+.dark button[data-action="login"],
+.dark .wl-panel .wl-btn:not(.wl-submit-btn),
+.dark .wl-footer .wl-btn:not(.wl-submit-btn),
+.dark .wl-header .wl-btn:not(.wl-submit-btn),
+.dark .wl-action .wl-btn:not(.wl-submit-btn) {
+  background-color: transparent !important;
+  color: #3b82f6 !important;
+  border: 1px solid #3b82f6 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+/* 空心按钮悬停 - 填充 */
+.dark .wl-btn:not(.wl-submit-btn):not([type="submit"]):hover,
+.dark .wl-login-btn:hover,
+.dark button[data-action="login"]:hover {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* 禁用按钮 */
+.dark .wl-btn:disabled,
+.dark .wl-btn.wl-disabled {
+  background-color: transparent !important;
+  color: #64748b !important;
+  border: 1px solid #475569 !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* ============================================
+   其他 Waline 样式
+   ============================================ */
+
 .dark .wl-content {
   background-color: transparent !important;
 }
 
-/* 引用块 */
 .dark .wl-content blockquote {
   background-color: #0f172a !important;
   border-left-color: #3b82f6 !important;
 }
 
-/* 代码块 */
 .dark .wl-content pre,
 .dark .wl-content code {
   background-color: #0f172a !important;
   color: #f8fafc !important;
 }
 
-/* 链接 */
 .dark .wl-content a {
   color: #3b82f6 !important;
 }
@@ -202,14 +230,14 @@
   color: #60a5fa !important;
 }
 
-/* 去掉 Powered by Waline - 只隐藏版权文字，不隐藏按钮 */
+/* 去掉 Powered by Waline */
 .waline-copyright,
 .wl-copyright,
 .wl-power {
   display: none !important;
 }
 
-/* 确保 footer 区域内的按钮仍然可见 */
+/* 确保 footer 按钮可见 */
 .waline-footer,
 .wl-footer {
   display: block !important;
