@@ -5,6 +5,14 @@ import { Search, X } from 'lucide-react';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { useRouter } from 'next/navigation';
 
+// 搜索结果类型
+interface SearchResult {
+  id: string;
+  title: string;
+  url: string;
+  description?: string;
+}
+
 export function ResponsiveSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -39,11 +47,32 @@ export function ResponsiveSearch() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.data && query.data.length > 0) {
-      router.push(query.data[0].url);
-      setIsOpen(false);
-      setSearch('');
+      const firstResult = query.data[0];
+      // 检查是否是对象且有 url 属性
+      if (typeof firstResult === 'object' && firstResult !== null && 'url' in firstResult) {
+        router.push((firstResult as SearchResult).url);
+        setIsOpen(false);
+        setSearch('');
+      }
     }
   };
+
+  // 处理结果点击
+  const handleResultClick = (result: SearchResult) => {
+    router.push(result.url);
+    setIsOpen(false);
+    setSearch('');
+  };
+
+  // 获取有效的搜索结果
+  const getResults = (): SearchResult[] => {
+    if (!query.data || query.data === 'empty') return [];
+    return query.data.filter((item): item is SearchResult => 
+      typeof item === 'object' && item !== null && 'url' in item
+    );
+  };
+
+  const results = getResults();
 
   // 手机端：点击放大镜展开搜索框
   if (isMobile) {
@@ -52,16 +81,16 @@ export function ResponsiveSearch() {
         {!isOpen ? (
           <button
             onClick={() => setIsOpen(true)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-accent transition-colors"
             aria-label="打开搜索"
           >
-            <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <Search className="w-5 h-5 text-muted-foreground" />
           </button>
         ) : (
-          <div className="fixed inset-0 top-16 bg-white dark:bg-gray-900 z-50 p-4 animate-in slide-in-from-top-2">
+          <div className="fixed inset-0 top-14 bg-background z-50 p-4 animate-in slide-in-from-top-2">
             <div className="flex items-center gap-2 mb-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <form onSubmit={handleSubmit} className="w-full">
                   <input
                     ref={inputRef}
@@ -69,7 +98,7 @@ export function ResponsiveSearch() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="搜索文档..."
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </form>
               </div>
@@ -78,30 +107,26 @@ export function ResponsiveSearch() {
                   setIsOpen(false);
                   setSearch('');
                 }}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="p-2 rounded-lg hover:bg-accent"
               >
-                <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <X className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
             
             {/* 搜索结果 */}
-            {query.data && query.data !== 'empty' && (
+            {results.length > 0 && (
               <div className="space-y-2">
-                {query.data.map((result) => (
+                {results.map((result) => (
                   <button
                     key={result.id}
-                    onClick={() => {
-                      router.push(result.url);
-                      setIsOpen(false);
-                      setSearch('');
-                    }}
-                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    onClick={() => handleResultClick(result)}
+                    className="w-full text-left p-3 rounded-lg hover:bg-accent transition-colors"
                   >
-                    <div className="font-medium text-gray-900 dark:text-gray-100">
+                    <div className="font-medium">
                       {result.title}
                     </div>
                     {result.description && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      <div className="text-sm text-muted-foreground mt-1">
                         {result.description}
                       </div>
                     )}
@@ -118,34 +143,31 @@ export function ResponsiveSearch() {
   // 电脑端：直接显示搜索框（左侧带放大镜图标）
   return (
     <div className="relative w-64 lg:w-80">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
       <form onSubmit={handleSubmit} className="w-full">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="搜索文档... (Ctrl K)"
-          className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="w-full pl-9 pr-4 py-2 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-all"
         />
       </form>
       
       {/* 下拉搜索结果 */}
-      {search && query.data && query.data !== 'empty' && (
-        <div className="absolute top-full left-0 right-0 mt-2 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg max-h-96 overflow-auto z-50">
-          {query.data.map((result) => (
+      {search && results.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-2 py-2 bg-background rounded-lg border border-input shadow-lg max-h-96 overflow-auto z-50">
+          {results.map((result) => (
             <button
               key={result.id}
-              onClick={() => {
-                router.push(result.url);
-                setSearch('');
-              }}
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={() => handleResultClick(result)}
+              className="w-full text-left px-4 py-2 hover:bg-accent transition-colors"
             >
-              <div className="font-medium text-sm text-gray-900 dark:text-gray-100">
+              <div className="font-medium text-sm">
                 {result.title}
               </div>
               {result.description && (
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <div className="text-xs text-muted-foreground mt-0.5">
                   {result.description}
                 </div>
               )}
