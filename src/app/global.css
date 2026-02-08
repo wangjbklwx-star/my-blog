@@ -125,10 +125,6 @@
 .dark .wl-card,
 .dark .wl-header,
 .dark .wl-body,
-.dark .wl-footer,
-.dark .wl-input,
-.dark .wl-textarea,
-.dark .wl-editor,
 .dark .wl-panel,
 .dark .wl-meta,
 .dark .wl-content,
@@ -136,7 +132,6 @@
 .dark .wl-nick,
 .dark .wl-time,
 .dark .wl-badge,
-.dark .wl-btn,
 .dark .wl-action,
 .dark .wl-login-info,
 .dark .wl-profile,
@@ -157,14 +152,25 @@
   border: 1px solid #334155 !important;
 }
 
-/* 按钮样式 - 保持主题色，不强制变蓝 */
-.dark .wl-btn {
+/* 按钮基础样式 - 确保按钮可见 */
+.dark .wl-btn,
+.dark .wl-login-btn,
+.dark .wl-submit-btn,
+.dark button.wl-btn,
+.dark .wl-panel .wl-btn,
+.dark .wl-footer .wl-btn {
   background-color: #3b82f6 !important;
   color: #ffffff !important;
   border-color: #3b82f6 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-.dark .wl-btn:hover {
+/* 按钮悬停效果 */
+.dark .wl-btn:hover,
+.dark .wl-login-btn:hover,
+.dark .wl-submit-btn:hover {
   background-color: #2563eb !important;
   border-color: #2563eb !important;
 }
@@ -196,11 +202,24 @@
   color: #60a5fa !important;
 }
 
-/* 去掉 Powered by Waline */
+/* 去掉 Powered by Waline - 只隐藏版权文字，不隐藏按钮 */
 .waline-copyright,
-.waline-footer,
 .wl-copyright,
-.wl-footer,
 .wl-power {
   display: none !important;
+}
+
+/* 确保 footer 区域内的按钮仍然可见 */
+.waline-footer,
+.wl-footer {
+  display: block !important;
+}
+
+.waline-footer .wl-btn,
+.wl-footer .wl-btn,
+.waline-footer button,
+.wl-footer button {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
