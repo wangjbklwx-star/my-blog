@@ -50,7 +50,7 @@ export function ResponsiveSearch() {
     const results: SearchResult[] = [];
     for (const item of query.data) {
       if (typeof item === 'object' && item !== null && 'url' in item && 'id' in item) {
-        const obj = item as Record<string, unknown>;
+        const obj = item as unknown as Record<string, unknown>;
         results.push({
           id: String(obj.id),
           title: String(obj.title || '无标题'),
@@ -185,4 +185,4 @@ export function ResponsiveSearch() {
       )}
     </div>
   );
-      }
+            }
