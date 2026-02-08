@@ -152,29 +152,29 @@
    按钮样式
    ============================================ */
 
-/* 发送按钮 - 实心蓝色（保持默认） */
-.dark .wl-submit-btn,
-.dark .wl-panel .wl-submit-btn,
-.dark button[type="submit"].wl-btn {
+/* 发送按钮 - 实心蓝色（使用 .primary 类） */
+.dark .wl-btn.primary,
+.dark button.wl-btn.primary {
   background-color: #3b82f6 !important;
   color: #ffffff !important;
   border: 1px solid #3b82f6 !important;
 }
 
-.dark .wl-submit-btn:hover,
-.dark button[type="submit"].wl-btn:hover {
+.dark .wl-btn.primary:hover,
+.dark button.wl-btn.primary:hover {
   background-color: #2563eb !important;
   border-color: #2563eb !important;
 }
 
 /* 其他所有按钮 - 空心描边（登录、预览等） */
-.dark .wl-btn:not(.wl-submit-btn):not([type="submit"]),
+.dark .wl-btn:not(.primary),
+.dark button.wl-btn:not(.primary),
 .dark .wl-login-btn,
 .dark button[data-action="login"],
-.dark .wl-panel .wl-btn:not(.wl-submit-btn),
-.dark .wl-footer .wl-btn:not(.wl-submit-btn),
-.dark .wl-header .wl-btn:not(.wl-submit-btn),
-.dark .wl-action .wl-btn:not(.wl-submit-btn) {
+.dark .wl-panel .wl-btn:not(.primary),
+.dark .wl-footer .wl-btn:not(.primary),
+.dark .wl-header .wl-btn:not(.primary),
+.dark .wl-action .wl-btn:not(.primary) {
   background-color: transparent !important;
   color: #3b82f6 !important;
   border: 1px solid #3b82f6 !important;
@@ -186,7 +186,8 @@
 }
 
 /* 空心按钮悬停 - 填充 */
-.dark .wl-btn:not(.wl-submit-btn):not([type="submit"]):hover,
+.dark .wl-btn:not(.primary):hover,
+.dark button.wl-btn:not(.primary):hover,
 .dark .wl-login-btn:hover,
 .dark button[data-action="login"]:hover {
   background-color: #3b82f6 !important;
