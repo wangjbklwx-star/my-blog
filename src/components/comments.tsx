@@ -34,13 +34,3 @@ export function Comments() {
   return <div id="waline" ref={ref} />;
 }
 
-:root {
-  --waline-border: none;
-  --waline-box-shadow: 0 12px 40px rgb(134 151 168 / 25%);
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    --waline-box-shadow: 0 12px 40px #0f0e0d;
-  }
-}
