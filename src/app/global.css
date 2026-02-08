@@ -4,6 +4,7 @@
 @import 'fumadocs-twoslash/twoslash.css';
 
 @theme {
+  /* 浅色模式 - 蓝色主题 */
   --color-fd-background: #f8fafc;
   --color-fd-foreground: #0f172a;
   --color-fd-border: #e2e8f0;
@@ -23,6 +24,7 @@
 }
 
 .dark {
+  /* 深色模式 - 亮蓝色主题 */
   --color-fd-background: #0f172a;
   --color-fd-foreground: #f8fafc;
   --color-fd-border: #1e293b;
@@ -51,10 +53,12 @@
     transition: color 0.2s ease;
   }
   
+  /* 链接悬停变蓝色 */
   a:hover {
     color: #2563eb;
   }
   
+  /* 深色模式链接悬停 */
   .dark a:hover {
     color: #3b82f6;
   }
@@ -67,6 +71,7 @@
     scroll-behaviour: smooth;
   }
   
+  /* footnote 跳转 */
   [id^="fnref"],
   [id^="user-content-fnref"] {
     scroll-margin-top: 5.5rem;
@@ -79,47 +84,142 @@
   }
 }
 
-/* Waline 变量 - 浅色模式 */
+@layer utilities {
+  /* 按钮悬停样式已移除，保持默认主题色 */
+}
+
+/* Waline 颜色适配 - 放在所有 @layer 外面 */
 :root {
-  --waline-theme-color: #2563eb;
-  --waline-active-color: #1d4ed8;
-  --waline-color: #0f172a;
-  --waline-bgcolor: #ffffff;
-  --waline-bgcolor-light: #f8fafc;
-  --waline-bgcolor-hover: #f1f5f9;
-  --waline-border-color: #e2e8f0;
-  --waline-disable-bgcolor: #f1f5f9;
-  --waline-disable-color: #94a3b8;
-  --waline-code-bgcolor: #f1f5f9;
-  --waline-bq-color: #64748b;
-  --waline-avatar-radius: 50%;
-  --waline-mt: 2rem;
+  --waline-theme-color: #2563eb !important;
+  --waline-active-color: #1d4ed8 !important;
+  --waline-color: #0f172a !important;
+  --waline-bgcolor: #ffffff !important;
+  --waline-bgcolor-light: #f8fafc !important;
+  --waline-bgcolor-hover: #f1f5f9 !important;
+  --waline-border-color: #e2e8f0 !important;
+  --waline-disable-bgcolor: #f1f5f9 !important;
+  --waline-disable-color: #94a3b8 !important;
+  --waline-code-bgcolor: #f1f5f9 !important;
+  --waline-bq-color: #64748b !important;
+  --waline-avatar-radius: 50% !important;
+  --waline-mt: 2rem !important;
 }
 
-/* Waline 变量 - 深色模式 */
 .dark {
-  --waline-theme-color: #3b82f6;
-  --waline-active-color: #60a5fa;
-  --waline-color: #f8fafc;
-  --waline-bgcolor: #1e293b;
-  --waline-bgcolor-light: #0f172a;
-  --waline-bgcolor-hover: #334155;
-  --waline-border-color: #334155;
-  --waline-disable-bgcolor: #1e293b;
-  --waline-disable-color: #64748b;
-  --waline-code-bgcolor: #0f172a;
-  --waline-bq-color: #94a3b8;
+  --waline-theme-color: #3b82f6 !important;
+  --waline-active-color: #60a5fa !important;
+  --waline-color: #f8fafc !important;
+  --waline-bgcolor: #1e293b !important;
+  --waline-bgcolor-light: #0f172a !important;
+  --waline-bgcolor-hover: #334155 !important;
+  --waline-border-color: #334155 !important;
+  --waline-disable-bgcolor: #1e293b !important;
+  --waline-disable-color: #64748b !important;
+  --waline-code-bgcolor: #0f172a !important;
+  --waline-bq-color: #94a3b8 !important;
 }
 
-/* 只隐藏版权信息，不隐藏按钮 */
+/* Waline 深色模式全面修复 */
+.dark .waline-wrapper,
+.dark .wl-container,
+.dark .wl-card,
+.dark .wl-header,
+.dark .wl-body,
+.dark .wl-panel,
+.dark .wl-meta,
+.dark .wl-content,
+.dark .wl-comment,
+.dark .wl-nick,
+.dark .wl-time,
+.dark .wl-badge,
+.dark .wl-action,
+.dark .wl-login-info,
+.dark .wl-profile,
+.dark .wl-emoji-popup,
+.dark .wl-gif-popup,
+.dark .wl-preview {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* 输入框特殊处理 */
+.dark .wl-input,
+.dark .wl-textarea,
+.dark .wl-editor {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+/* 按钮基础样式 - 确保按钮可见 */
+.dark .wl-btn,
+.dark .wl-login-btn,
+.dark .wl-submit-btn,
+.dark button.wl-btn,
+.dark .wl-panel .wl-btn,
+.dark .wl-footer .wl-btn {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 按钮悬停效果 */
+.dark .wl-btn:hover,
+.dark .wl-login-btn:hover,
+.dark .wl-submit-btn:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* 评论内容区 */
+.dark .wl-content {
+  background-color: transparent !important;
+}
+
+/* 引用块 */
+.dark .wl-content blockquote {
+  background-color: #0f172a !important;
+  border-left-color: #3b82f6 !important;
+}
+
+/* 代码块 */
+.dark .wl-content pre,
+.dark .wl-content code {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* 链接 */
+.dark .wl-content a {
+  color: #3b82f6 !important;
+}
+
+.dark .wl-content a:hover {
+  color: #60a5fa !important;
+}
+
+/* 去掉 Powered by Waline - 只隐藏版权文字，不隐藏按钮 */
+.waline-copyright,
 .wl-copyright,
-.wl-power,
-.wl-footer .wl-copyright,
-.wl-footer .wl-power {
-  display: none;
+.wl-power {
+  display: none !important;
 }
 
-/* 确保按钮容器可见 */
+/* 确保 footer 区域内的按钮仍然可见 */
+.waline-footer,
 .wl-footer {
-  display: flex;
+  display: block !important;
+}
+
+.waline-footer .wl-btn,
+.wl-footer .wl-btn,
+.waline-footer button,
+.wl-footer button {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
