@@ -79,37 +79,7 @@
   }
 }
 
-/* Waline 变量 - 浅色模式 */
-:root {
-  --waline-theme-color: #2563eb;
-  --waline-active-color: #1d4ed8;
-  --waline-color: #0f172a;
-  --waline-bgcolor: #ffffff;
-  --waline-bgcolor-light: #f8fafc;
-  --waline-bgcolor-hover: #f1f5f9;
-  --waline-border-color: #e2e8f0;
-  --waline-disable-bgcolor: #f1f5f9;
-  --waline-disable-color: #94a3b8;
-  --waline-code-bgcolor: #f1f5f9;
-  --waline-bq-color: #64748b;
-  --waline-avatar-radius: 50%;
-  --waline-mt: 2rem;
-}
 
-/* Waline 变量 - 深色模式 */
-.dark {
-  --waline-theme-color: #3b82f6;
-  --waline-active-color: #60a5fa;
-  --waline-color: #f8fafc;
-  --waline-bgcolor: #1e293b;
-  --waline-bgcolor-light: #0f172a;
-  --waline-bgcolor-hover: #334155;
-  --waline-border-color: #334155;
-  --waline-disable-bgcolor: #1e293b;
-  --waline-disable-color: #64748b;
-  --waline-code-bgcolor: #0f172a;
-  --waline-bq-color: #94a3b8;
-}
 
 /* 只隐藏版权信息，不隐藏按钮 */
 .wl-copyright,
