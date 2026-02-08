@@ -37,8 +37,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               },
           }}
         >
-          {/* 顶部导航栏 */}
-          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          {/* 顶部导航栏 - 降低 z-index，移除 fixed/sticky 冲突 */}
+          <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 h-14 flex items-center">
               {/* Logo */}
               <a href="/" className="font-bold text-lg">{title}</a>
