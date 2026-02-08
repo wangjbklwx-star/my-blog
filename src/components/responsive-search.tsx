@@ -43,17 +43,23 @@ export function ResponsiveSearch() {
     api: '/api/search',
   });
 
-  // 检查是否是有效的搜索结果
-  const isValidResult = (item: unknown): item is SearchResult => {
-    if (typeof item !== 'object' || item === null) return false;
-    const obj = item as Record<string, unknown>;
-    return typeof obj.url === 'string' && typeof obj.id === 'string';
-  };
-
   // 获取有效的搜索结果
   const getResults = (): SearchResult[] => {
     if (!query.data || query.data === 'empty') return [];
-    return query.data.filter(isValidResult);
+    
+    const results: SearchResult[] = [];
+    for (const item of query.data) {
+      if (typeof item === 'object' && item !== null && 'url' in item && 'id' in item) {
+        const obj = item as Record<string, unknown>;
+        results.push({
+          id: String(obj.id),
+          title: String(obj.title || '无标题'),
+          url: String(obj.url),
+          description: obj.description ? String(obj.description) : undefined,
+        });
+      }
+    }
+    return results;
   };
 
   // 处理搜索提交
@@ -125,7 +131,7 @@ export function ResponsiveSearch() {
                     className="w-full text-left p-3 rounded-lg hover:bg-accent transition-colors"
                   >
                     <div className="font-medium">
-                      {result.title || '无标题'}
+                      {result.title}
                     </div>
                     {result.description && (
                       <div className="text-sm text-muted-foreground mt-1">
@@ -166,7 +172,7 @@ export function ResponsiveSearch() {
               className="w-full text-left px-4 py-2 hover:bg-accent transition-colors"
             >
               <div className="font-medium text-sm">
-                {result.title || '无标题'}
+                {result.title}
               </div>
               {result.description && (
                 <div className="text-xs text-muted-foreground mt-0.5">
@@ -179,4 +185,4 @@ export function ResponsiveSearch() {
       )}
     </div>
   );
-            }
+      }
