@@ -11,7 +11,3 @@ export const { GET } = createSearchAPI('advanced', {
   })),
   tokenizer: createTokenizer()
 });
-// 创建搜索 API
-export const { GET } = createFromSource(source, {
-  language: 'chinese',
-});
