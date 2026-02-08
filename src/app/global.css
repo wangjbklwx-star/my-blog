@@ -3,6 +3,11 @@
 @import "fumadocs-ui/css/preset.css";
 @import 'fumadocs-twoslash/twoslash.css';
 
+/* ============================================
+   Tailwind v4 深色模式配置
+   ============================================ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-fd-background: #f8fafc;
   --color-fd-foreground: #0f172a;
@@ -81,11 +86,11 @@
 
 /* ============================================
    Waline 评论区 - 蓝色主题适配
-   与你的 Fumadocs 设计系统完全兼容
+   使用 html 选择器提高优先级，确保覆盖默认样式
    ============================================ */
 
-/* 基础变量覆盖 - 蓝色主题 */
-:root {
+/* 基础变量覆盖 - 蓝色主题（浅色模式） */
+html {
   /* 主题色改为蓝色 */
   --waline-theme-color: #2563eb;
   --waline-active-color: #3b82f6;
@@ -109,10 +114,15 @@
   /* 信息区域 */
   --waline-info-bg-color: #f8fafc;
   --waline-info-color: #64748b;
+  
+  /* 其他 */
+  --waline-white: #fff;
+  --waline-light-grey: #999;
+  --waline-dark-grey: #666;
 }
 
-/* 深色模式 - 与你的 .dark 类兼容 */
-.dark {
+/* 深色模式 - 使用 html.dark 提高优先级 */
+html.dark {
   /* 主题色 - 稍亮的蓝色 */
   --waline-theme-color: #3b82f6;
   --waline-active-color: #60a5fa;
@@ -142,121 +152,123 @@
 }
 
 /* ============================================
-   Waline 额外样式微调
+   Waline 组件样式覆盖
+   使用具体类名确保生效
    ============================================ */
 
 /* 输入框聚焦状态 */
 .wl-input:focus,
 .wl-editor:focus {
-  border-color: var(--waline-theme-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--waline-theme-color) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
 }
 
-.dark .wl-input:focus,
-.dark .wl-editor:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+html.dark .wl-input:focus,
+html.dark .wl-editor:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
 }
 
 /* 按钮样式增强 */
 .wl-btn {
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
 }
 
 .wl-btn.primary {
-  background: var(--waline-theme-color);
-  color: white;
+  background: var(--waline-theme-color) !important;
+  color: white !important;
 }
 
 .wl-btn.primary:hover {
-  background: var(--waline-active-color);
-  transform: translateY(-1px);
+  background: var(--waline-active-color) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* 评论卡片 */
 .wl-card {
-  border-radius: 0.75rem;
-  border: 1px solid var(--waline-border-color);
-  background: var(--waline-bg-color);
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--waline-border-color) !important;
+  background: var(--waline-bg-color) !important;
 }
 
 /* 头像 */
 .wl-avatar img {
-  border-radius: 50%;
-  border: 2px solid var(--waline-border-color);
-  transition: border-color 0.2s ease;
+  border-radius: 50% !important;
+  border: 2px solid var(--waline-border-color) !important;
+  transition: border-color 0.2s ease !important;
 }
 
 .wl-avatar img:hover {
-  border-color: var(--waline-theme-color);
+  border-color: var(--waline-theme-color) !important;
 }
 
 /* 点赞按钮 */
 .wl-like-btn.active {
-  color: var(--waline-theme-color);
+  color: var(--waline-theme-color) !important;
 }
 
 /* 回复按钮 */
 .wl-reply-btn {
-  color: var(--waline-theme-color);
+  color: var(--waline-theme-color) !important;
 }
 
 /* 代码块 */
 .wl-content pre {
-  background: var(--waline-code-bg-color);
-  border-radius: 0.5rem;
+  background: var(--waline-code-bg-color) !important;
+  border-radius: 0.5rem !important;
 }
 
 /* 引用块 */
 .wl-content blockquote {
-  border-left: 4px solid var(--waline-theme-color);
-  background: var(--waline-bq-color);
-  border-radius: 0 0.5rem 0.5rem 0;
+  border-left: 4px solid var(--waline-theme-color) !important;
+  background: var(--waline-bq-color) !important;
+  border-radius: 0 0.5rem 0.5rem 0 !important;
 }
 
 /* 链接 */
 .wl-content a {
-  color: var(--waline-theme-color);
-  text-decoration: none;
+  color: var(--waline-theme-color) !important;
+  text-decoration: none !important;
 }
 
 .wl-content a:hover {
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 
 /* 表情选择器 */
 .wl-emoji-popup {
-  border-radius: 0.75rem;
-  border: 1px solid var(--waline-border-color);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--waline-border-color) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  background: var(--waline-bg-color) !important;
 }
 
-.dark .wl-emoji-popup {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+html.dark .wl-emoji-popup {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* 预览区域 */
 .wl-preview {
-  border-radius: 0.5rem;
-  background: var(--waline-bg-color-light);
+  border-radius: 0.5rem !important;
+  background: var(--waline-bg-color-light) !important;
 }
 
 /* 通知徽章 */
 .wl-badge {
-  background: var(--waline-badge-color);
-  color: white;
-  font-weight: 600;
+  background: var(--waline-badge-color) !important;
+  color: white !important;
+  font-weight: 600 !important;
 }
 
 /* 加载动画颜色 */
 .wl-loading svg {
-  color: var(--waline-theme-color);
+  color: var(--waline-theme-color) !important;
 }
 
 /* 空状态 */
 .wl-empty {
-  color: var(--waline-info-color);
+  color: var(--waline-info-color) !important;
 }
 
 /* 版权信息隐藏 */
@@ -264,9 +276,45 @@
 .wl-power,
 .wl-footer .wl-copyright,
 .wl-footer .wl-power {
-  display: none;
+  display: none !important;
 }
 
 .wl-footer {
-  display: flex;
+  display: flex !important;
+}
+
+/* 输入框背景 */
+.wl-input,
+.wl-editor {
+  background: var(--waline-bg-color) !important;
+  color: var(--waline-color) !important;
+  border-color: var(--waline-border-color) !important;
+}
+
+/* 评论内容文字颜色 */
+.wl-content {
+  color: var(--waline-color) !important;
+}
+
+/* 用户名颜色 */
+.wl-nick {
+  color: var(--waline-color) !important;
+}
+
+/* 时间颜色 */
+.wl-time {
+  color: var(--waline-info-color) !important;
+}
+
+/* 操作按钮颜色 */
+.wl-delete,
+.wl-like,
+.wl-reply {
+  color: var(--waline-info-color) !important;
+}
+
+.wl-delete:hover,
+.wl-like:hover,
+.wl-reply:hover {
+  color: var(--waline-theme-color) !important;
 }
