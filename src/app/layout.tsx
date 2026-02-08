@@ -6,7 +6,6 @@ import './global.css';
 import 'katex/dist/katex.css';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { ResponsiveSearch } from '@/components/responsive-search';
-import { SearchShortcut } from '@/components/search-shortcut';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -39,8 +38,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               },
           }}
         >
-          <SearchShortcut />
-          
           {/* 顶部导航栏 - 包含搜索 */}
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 h-14 flex items-center justify-between">
