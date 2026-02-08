@@ -5,6 +5,8 @@ import { description, title } from './layout.config';
 import './global.css';
 import 'katex/dist/katex.css';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { ResponsiveSearch } from '@/components/responsive-search';
+import { SearchShortcut } from '@/components/search-shortcut';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -15,7 +17,7 @@ const jetbrains = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
-const Layout = ({ children }: LayoutProps<'/'>) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html
       className={`${geist.className} ${jetbrains.variable} antialiased`}
@@ -37,7 +39,26 @@ const Layout = ({ children }: LayoutProps<'/'>) => {
               },
           }}
         >
-          {children}
+          <SearchShortcut />
+          
+          {/* 顶部导航栏 - 包含搜索 */}
+          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+              {/* 左侧：Logo */}
+              <div className="flex items-center gap-4">
+                <a href="/" className="font-bold text-lg">{title}</a>
+              </div>
+              
+              {/* 右侧：搜索组件 */}
+              <ResponsiveSearch />
+            </div>
+          </header>
+          
+          {/* 主内容区域 */}
+          <main className="flex-1">
+            {children}
+          </main>
+          
           <Footer />
         </RootProvider>
       </body>
