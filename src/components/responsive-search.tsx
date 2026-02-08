@@ -43,17 +43,27 @@ export function ResponsiveSearch() {
     api: '/api/search',
   });
 
+  // 检查是否是有效的搜索结果
+  const isValidResult = (item: unknown): item is SearchResult => {
+    if (typeof item !== 'object' || item === null) return false;
+    const obj = item as Record<string, unknown>;
+    return typeof obj.url === 'string' && typeof obj.id === 'string';
+  };
+
+  // 获取有效的搜索结果
+  const getResults = (): SearchResult[] => {
+    if (!query.data || query.data === 'empty') return [];
+    return query.data.filter(isValidResult);
+  };
+
   // 处理搜索提交
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.data && query.data.length > 0) {
-      const firstResult = query.data[0];
-      // 检查是否是对象且有 url 属性
-      if (typeof firstResult === 'object' && firstResult !== null && 'url' in firstResult) {
-        router.push((firstResult as SearchResult).url);
-        setIsOpen(false);
-        setSearch('');
-      }
+    const results = getResults();
+    if (results.length > 0) {
+      router.push(results[0].url);
+      setIsOpen(false);
+      setSearch('');
     }
   };
 
@@ -62,14 +72,6 @@ export function ResponsiveSearch() {
     router.push(result.url);
     setIsOpen(false);
     setSearch('');
-  };
-
-  // 获取有效的搜索结果
-  const getResults = (): SearchResult[] => {
-    if (!query.data || query.data === 'empty') return [];
-    return query.data.filter((item): item is SearchResult => 
-      typeof item === 'object' && item !== null && 'url' in item
-    );
   };
 
   const results = getResults();
@@ -97,7 +99,7 @@ export function ResponsiveSearch() {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="搜索文档..."
+                    placeholder="搜索文章..."
                     className="w-full pl-10 pr-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </form>
@@ -123,7 +125,7 @@ export function ResponsiveSearch() {
                     className="w-full text-left p-3 rounded-lg hover:bg-accent transition-colors"
                   >
                     <div className="font-medium">
-                      {result.title}
+                      {result.title || '无标题'}
                     </div>
                     {result.description && (
                       <div className="text-sm text-muted-foreground mt-1">
@@ -149,7 +151,7 @@ export function ResponsiveSearch() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="搜索文档... (Ctrl K)"
+          placeholder="搜索文章... (Ctrl K)"
           className="w-full pl-9 pr-4 py-2 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-all"
         />
       </form>
@@ -164,7 +166,7 @@ export function ResponsiveSearch() {
               className="w-full text-left px-4 py-2 hover:bg-accent transition-colors"
             >
               <div className="font-medium text-sm">
-                {result.title}
+                {result.title || '无标题'}
               </div>
               {result.description && (
                 <div className="text-xs text-muted-foreground mt-0.5">
@@ -177,4 +179,4 @@ export function ResponsiveSearch() {
       )}
     </div>
   );
-}
+            }
