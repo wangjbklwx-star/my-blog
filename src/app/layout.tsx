@@ -5,6 +5,7 @@ import { description, title } from './layout.config';
 import './global.css';
 import 'katex/dist/katex.css';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { MessageSquare } from 'lucide-react'; // 如果没有 lucide-react，可以去掉图标
 
 const geist = Geist({
   subsets: ['latin'],
@@ -37,11 +38,29 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               },
           }}
         >
-          {/* 顶部导航栏 - 降低 z-index，移除 fixed/sticky 冲突 */}
+          {/* 顶部导航栏 */}
           <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4 h-14 flex items-center">
+            <div className="container mx-auto px-4 h-14 flex items-center justify-between">
               {/* Logo */}
               <a href="/" className="font-bold text-lg">{title}</a>
+              
+              {/* 导航菜单 */}
+              <nav className="flex items-center gap-6">
+                <a href="/" className="text-sm hover:text-blue-500 transition-colors">首页</a>
+                <a href="/docs" className="text-sm hover:text-blue-500 transition-colors">文档</a>
+                <a href="/blog" className="text-sm hover:text-blue-500 transition-colors">博客</a>
+                
+                {/* 去论坛按钮 */}
+                <a 
+                  href="https://bb.wangjb.eu.cc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  去论坛
+                </a>
+              </nav>
             </div>
           </header>
           
