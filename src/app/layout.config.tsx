@@ -27,7 +27,7 @@ export const linkItems: LinkItemType[] = [
   {
     icon: <MessageSquare />,
     text: '论坛',
-    url: 'https://bb.wangjb.eu.cc/',
+    url: 'https://wangjb.discourse.group/',
     active: 'url',
     external: true,
   },
