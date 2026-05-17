@@ -25,13 +25,6 @@ export const linkItems: LinkItemType[] = [
     active: 'url',
   },
   {
-    icon: <MessageSquare />,
-    text: '论坛',
-    url: 'https://wangjb.discourse.group/',
-    active: 'url',
-    external: true,
-  },
-  {
     type: 'icon',
     label: 'rss',
     icon: <Rss />,
